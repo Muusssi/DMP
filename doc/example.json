@@ -1,0 +1,50 @@
+{
+    "meta": {
+      "week": 15
+    },
+    
+    "menus": {
+
+        "2014-03-05": [
+            {
+                "title_fi": "Lihapy\u00f6ryk\u00e4t intialaisittain, jogurttikastike, jasmineriisi",
+                "title_en": "Meat balls indian style with youghurt",
+                "properties": "L",
+                "desc_fi": "",
+                "desc_en": "",
+                "desc_se": ""
+            },
+            {
+                "title_fi": "Tofu-kasvish\u00f6yst\u00f6\u00e4, jasmineriisi\u00e4",
+                "title_en": "Vegetable stew with tofu and jasmine rice",
+                "properties": "G, L",
+                "desc_fi": "",
+                "desc_en": "",
+                "desc_se": ""
+            },
+            {
+                "title_fi": "Jauheliha-kaalikeittoa",
+                "title_en": "Cabbage soup with minced meat",
+                "properties": "G, M",
+                "desc_fi": "",
+                "desc_en": "",
+                "desc_se": ""
+            },
+            {
+                "title_fi": "Broileri-p\u00e4hkin\u00e4salaattia",
+                "title_en": "Chicken salad with nuts",
+                "properties": "G, M",
+                "desc_fi": "",
+                "desc_en": "",
+                "desc_se": ""
+            },
+            {
+                "title_fi": "A la carte: Rosvolammasta, minttukastike",
+                "title_en": "A la carte: Overdone lamb with mint sauce",
+                "desc_fi": "",
+                "desc_en": "",
+                "desc_se": ""
+            }
+        ]
+    }
+}
