@@ -7,30 +7,31 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import java.util.List;
+
 /**
  * Created by hmhagberg on 7.3.2014.
  */
 
 public class MenuListAdapter extends ArrayAdapter<Restaurant.RestaurantMenu> {
+    private static final int ROW_LAYOUT = R.layout.list_item;
     private final Context context;
-    private final int resource;
-    private final Restaurant.RestaurantMenu[] menus;
+    private final List<Restaurant.RestaurantMenu> menus;
 
-    private MenuListAdapter(Context context, int resource, Restaurant.RestaurantMenu[] menus) {
-        super(context, resource, menus);
+    public MenuListAdapter(Context context, List<Restaurant.RestaurantMenu> menus) {
+        super(context, ROW_LAYOUT, menus);
         this.context = context;
-        this.resource = resource;
         this.menus = menus;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rowView = inflater.inflate(R.layout.list_item, parent, false);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View rowView = inflater.inflate(ROW_LAYOUT, parent, false);
         TextView name = (TextView) rowView.findViewById(R.id.nameText);
         TextView menu = (TextView) rowView.findViewById(R.id.menuText);
-        name.setText(menus[position].getRestaurant().getName());
-        menu.setText(menus[position].getRestaurant().toString());
+        name.setText(menus.get(position).getRestaurant().getName());
+        menu.setText(menus.get(position).getRestaurant().toString());
 
         return rowView;
     }
