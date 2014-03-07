@@ -19,35 +19,32 @@ import java.util.*;
 
 public class Restaurant {
     private Context context;
+    private final String name;
     private String id;
     private HashMap<Calendar, RestaurantMenu> menusOfTheWeek = new HashMap<Calendar, RestaurantMenu>();
 
-    public Restaurant(Context context, String id) {
+    public Restaurant(Context context, String name, String id) {
         this.context = context;
+        this.name = name;
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public RestaurantMenu getMenu(Calendar calendar) {
         return menusOfTheWeek.get(calendar);
     }
 
-    void createMenus() {
-        try {
-            JSONObject json = buildJsonFromCache();
-            if (jsonIsUpToDate(json)) {
-                buildMenusFromJson(json);
-            } else {
-                downloadMenus();    // TODO: Implement
-            }
-        } catch (JSONException e) { // TODO: Handle errors properly
-            System.out.println(e.getMessage());
-        } catch (FileNotFoundException e) {
-            System.out.println(e.getMessage());
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        } catch (ParseException e) {
-            System.out.println(e.getMessage());
-        }
+    boolean createMenus() {
+        JSONObject json = buildJsonFromCache();
+        // Use short-circuit evaluation to handle menu creation
+        return ((json != null && (jsonIsUpToDate(json) && buildMenusFromJson(json))) || downloadMenus());
     }
 
 
@@ -55,63 +52,79 @@ public class Restaurant {
      * Check JSONObject holds menu data for current week.
      * @param json JSONObject to be inspected.
      * @return True if object is up-to-date, false otherwise.
-     * @throws JSONException
      */
-    boolean jsonIsUpToDate(JSONObject json) throws JSONException{
-        Calendar today = Calendar.getInstance();
-        int week = json.getJSONObject("meta").getInt("week");
-        return today.WEEK_OF_YEAR == week;
+    boolean jsonIsUpToDate(JSONObject json) {
+        try {
+            Calendar today = Calendar.getInstance();
+            int week = json.getJSONObject("meta").getInt("week");
+            return today.WEEK_OF_YEAR == week;
+        } catch (JSONException e) {
+            return false;
+        }
     }
 
+    boolean downloadMenus() {
+        // TODO Implement
+        return false;
+    }
 
     /**
      * Build a JSONObject from cached data.
      * @return JSONObject built.
-     * @throws IOException
-     * @throws JSONException
      */
-    JSONObject buildJsonFromCache() throws IOException, JSONException{
-        File cacheDir = context.getCacheDir();
-        File jsonFile = new File(cacheDir, id);
-        BufferedReader br = new BufferedReader(new FileReader(jsonFile));
-        StringBuilder jsonString = new StringBuilder();
-        String line;
-        while ((line = br.readLine()) != null) {
-            jsonString.append(line);
-            jsonString.append("\n");
+    JSONObject buildJsonFromCache() {
+        try {
+            File cacheDir = context.getCacheDir();
+            File jsonFile = new File(cacheDir, id);
+            BufferedReader br = new BufferedReader(new FileReader(jsonFile));
+            StringBuilder jsonString = new StringBuilder();
+            String line;
+            while ((line = br.readLine()) != null) {
+                jsonString.append(line);
+                jsonString.append("\n");
+            }
+            JSONObject json = new JSONObject(new JSONTokener(jsonString.toString()));
+            return json;
+        } catch (IOException e) {   // EXCEPT
+            return null;
+        } catch (JSONException e) {
+            return null;
         }
-        JSONObject json = new JSONObject(new JSONTokener(jsonString.toString()));
-        return json;
     }
 
     /**
      * Build RestaurantMenu objects from JSON and insert them to menusOfTheWeek.
      * @param json JSONObject created from cached or downloaded data.
-     * @throws ParseException thrown when date in JSON is invalid.
-     * @throws JSONException thrown when parsing JSON fails.
      */
-    void buildMenusFromJson(JSONObject json) throws ParseException, JSONException{
+    boolean buildMenusFromJson(JSONObject json) {
+        try {
+            JSONObject menus = json.getJSONObject("menus");
+            Iterator menusIterator = menus.keys();
+            JSONArray menuArray;
+            JSONObject jsonCourse;
+            int i;
 
-        JSONObject menus = json.getJSONObject("menus");
-        Iterator menusIterator = menus.keys();
-        JSONArray menuArray;
-        JSONObject jsonCourse;
-        int i;
-
-        while (menusIterator.hasNext()) {   // Iterate "whole week"
-            i = 0;
-            String calString = (String) menusIterator.next();
-            Calendar menuCal = parseCalendar(calString);
-            menuArray = menus.getJSONArray(calString);
-            RestaurantMenu menu = new RestaurantMenu(this, menuCal);
-            while ((jsonCourse = menuArray.getJSONObject(i)) != null) { // Iterate courses of a single day
-                Course course = new Course(jsonCourse.getString("title_fi"), jsonCourse.getString("title_en"));
-                course.setProperties(jsonCourse.getString("properties"));
-                menu.addCourse(course);
-                i++;
+            while (menusIterator.hasNext()) {   // Iterate "whole week"
+                i = 0;
+                String calString = (String) menusIterator.next();
+                Calendar menuCal = parseCalendar(calString);
+                menuArray = menus.getJSONArray(calString);
+                RestaurantMenu menu = new RestaurantMenu(this, menuCal);
+                while ((jsonCourse = menuArray.getJSONObject(i)) != null) { // Iterate courses of a single day
+                    Course course = new Course(jsonCourse.getString("title_fi"), jsonCourse.getString("title_en"));
+                    course.setProperties(jsonCourse.getString("properties"));
+                    menu.addCourse(course);
+                    i++;
+                }
+                menusOfTheWeek.put(menuCal, menu);
             }
-            menusOfTheWeek.put(menuCal, menu);
+            return true;
+        } catch (JSONException e) {
+
+        } catch (ParseException e) {
+
         }
+        return false;
     }
 
     /**
@@ -145,11 +158,16 @@ public class Restaurant {
         @Override
         public String toString() {
             StringBuilder collector = new StringBuilder();
+            collector.append(name + "\n");
             for (Course course: courses) {
                 collector.append(course.toString());
                 collector.append("\n");
             }
             return collector.toString();
+        }
+
+        public Restaurant getRestaurant() {
+            return restaurant;
         }
 
         public void addCourse(Course course) {
