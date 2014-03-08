@@ -1,6 +1,7 @@
 package com.hhto.dmp;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,17 +17,18 @@ import java.util.*;
  * Created by hmhagberg on 3.3.2014.
  */
 
-
-public class Restaurant {
+/**
+ * The base class for various restaurants. The implementation is complete except
+ * for data downloading and parsing. This should be implemented using AsyncTask.
+ */
+public abstract class Restaurant {
     private Context context;
-    private final String name;
+    private String name;
     private String id;
     private HashMap<Calendar, RestaurantMenu> menusOfTheWeek = new HashMap<Calendar, RestaurantMenu>();
 
-    public Restaurant(Context context, String name, String id) {
+    public Restaurant(Context context) {
         this.context = context;
-        this.name = name;
-        this.id = id;
     }
 
     public String getName() {
@@ -41,17 +43,25 @@ public class Restaurant {
         return menusOfTheWeek.get(calendar);
     }
 
-    boolean createMenus() {
-        JSONObject json = buildJsonFromCache();
-        // Use short-circuit evaluation to handle menu creation
-        return ((json != null && (jsonIsUpToDate(json) && buildMenusFromJson(json))) || downloadMenus());
+    /**
+     * Initialize menus. If data is up to date it is loaded from cache,
+     * otherwise it is downloaded from web.
+     */
+    void initMenus() {
+        JSONObject json = loadFromCache();
+        if (jsonIsUpToDate(json)) {
+            menusOfTheWeek = buildMenuMap(json);
+        } else {
+            downloadData();
+        }
     }
 
+    abstract void downloadData();
 
     /**
      * Check JSONObject holds menu data for current week.
      * @param json JSONObject to be inspected.
-     * @return True if object is up-to-date, false otherwise.
+     * @return true if object is up-to-date, false otherwise.
      */
     boolean jsonIsUpToDate(JSONObject json) {
         try {
@@ -63,23 +73,18 @@ public class Restaurant {
         }
     }
 
-    boolean downloadMenus() {
-        // TODO Implement
-        return false;
-    }
-
     /**
      * Build a JSONObject from cached data.
      * @return JSONObject built.
      */
-    JSONObject buildJsonFromCache() {
+    JSONObject loadFromCache() {
         try {
             File cacheDir = context.getCacheDir();
-            File jsonFile = new File(cacheDir, id);
-            BufferedReader br = new BufferedReader(new FileReader(jsonFile));
+            File cacheFile = new File(cacheDir, id); // Cache files are identified by restaurant id
+            BufferedReader reader = new BufferedReader(new FileReader(cacheFile));
             StringBuilder jsonString = new StringBuilder();
             String line;
-            while ((line = br.readLine()) != null) {
+            while ((line = reader.readLine()) != null) {
                 jsonString.append(line);
                 jsonString.append("\n");
             }
@@ -93,13 +98,32 @@ public class Restaurant {
     }
 
     /**
-     * Build RestaurantMenu objects from JSON and insert them to menusOfTheWeek.
-     * @param json JSONObject created from cached or downloaded data.
+     * Write a JSONObject to cache.
+     * @param json
      */
-    boolean buildMenusFromJson(JSONObject json) {
+    void saveToCache(JSONObject json) {
+        try {
+            File cacheDir = context.getCacheDir();
+            File cacheFile = new File(cacheDir, id); // Cache files are identified by restaurant id
+            BufferedWriter writer = new BufferedWriter(new FileWriter(cacheFile, false));   // Overwrite cache
+            writer.write(json.toString(4));
+        } catch (IOException e) {   // EXCEPT
+
+        } catch (JSONException e) {
+
+        }
+    }
+
+    /**
+     * Build RestaurantMenu objects from JSON and insert them to menusOfTheWeek.
+     * @param   JSONObject json     JSONObject parsed from cached or downloaded data.
+     * @return  HashMap menuMap     A HashMap with dates as keys and RestaurantMenus as values
+     */
+    HashMap<Calendar, RestaurantMenu> buildMenuMap(JSONObject json) {
         try {
             JSONObject menus = json.getJSONObject("menus");
             Iterator menusIterator = menus.keys();
+            HashMap<Calendar, RestaurantMenu> menuMap = new HashMap<Calendar, RestaurantMenu>();
             JSONArray menuArray;
             JSONObject jsonCourse;
             int i;
@@ -116,15 +140,15 @@ public class Restaurant {
                     menu.addCourse(course);
                     i++;
                 }
-                menusOfTheWeek.put(menuCal, menu);
+                menuMap.put(menuCal, menu);
             }
-            return true;
+            return menuMap;
         } catch (JSONException e) {
 
         } catch (ParseException e) {
 
         }
-        return false;
+        return null;
     }
 
     /**
