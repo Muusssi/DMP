@@ -10,7 +10,7 @@
     <MultiSelectListPreference
         android:key="pref_key_selected_restaurants"
         android:title="@string/pref_title_selected_restaurants"
-        android:entries="@string/restaurants"
-        android:entryValues="@string/restaurant_ids" />
+        android:entries="@array/restaurants"
+        android:entryValues="@array/restaurant_ids" />
 
 </PreferenceScreen>

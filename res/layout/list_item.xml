@@ -16,9 +16,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:paddingTop="@dimen/CardPadding"
-        android:paddingLeft="@dimen/CardPadding"
-        android:paddingRight="@dimen/CardPadding"
+        android:paddingTop="@dimen/card_padding"
+        android:paddingLeft="@dimen/card_padding"
+        android:paddingRight="@dimen/card_padding"
         android:ellipsize="marquee"
         android:singleLine="true"
         android:text="Restaurant" />
@@ -33,7 +33,9 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignWithParentIfMissing="true"
-        android:padding="@dimen/CardPadding"
+        android:paddingLeft="@dimen/card_padding"
+        android:paddingRight="@dimen/card_padding"
+        android:paddingBottom="5dip"
         android:text="Menus" />
 
 </RelativeLayout>

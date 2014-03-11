@@ -9,6 +9,7 @@
     <string-array name="restaurants">
         <item>"Sodexo"</item>
     </string-array>
+
     <string-array name="restaurant_ids">
         <item>"sodexo"</item>
     </string-array>
