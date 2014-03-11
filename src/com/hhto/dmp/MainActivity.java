@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.widget.ListView;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -16,9 +17,10 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         ListView menuListView = (ListView) findViewById(R.id.menuList);
-        Calendar today = Calendar.getInstance();
-        DataProvider dataProvider = new DataProvider();
-        List<Restaurant.RestaurantMenu> menuList = dataProvider.getMenus(today, "id1", "id2");
+        SodexoRestaurant sodexo = new SodexoRestaurant(this);
+        sodexo.initMenus();
+        List<Restaurant.RestaurantMenu> menuList = new ArrayList<Restaurant.RestaurantMenu>();
+        menuList.add(sodexo.getMenu("2014-03-05"));
         menuListView.setAdapter(new MenuListAdapter(this, menuList));
     }
 }

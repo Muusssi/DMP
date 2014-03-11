@@ -22,13 +22,15 @@ import java.util.*;
  * for data downloading and parsing. This should be implemented using AsyncTask.
  */
 public abstract class Restaurant {
-    private Context context;
-    private String name;
-    private String id;
-    private HashMap<Calendar, RestaurantMenu> menusOfTheWeek = new HashMap<Calendar, RestaurantMenu>();
+    Context context;
+    String name;
+    String id;
+    HashMap<String, RestaurantMenu> menusOfTheWeek = new HashMap<String, RestaurantMenu>();
 
-    public Restaurant(Context context) {
+    public Restaurant(Context context, String name, String id) {
         this.context = context;
+        this.name = name;
+        this.id = id;
     }
 
     public String getName() {
@@ -39,17 +41,18 @@ public abstract class Restaurant {
         return id;
     }
 
-    public RestaurantMenu getMenu(Calendar calendar) {
-        return menusOfTheWeek.get(calendar);
+    public RestaurantMenu getMenu(String date) {
+        return menusOfTheWeek.get(date);
     }
 
     /**
      * Initialize menus. If data is up to date it is loaded from cache,
-     * otherwise it is downloaded from web.
+     * otherwise it is downloaded from web. This method should be called
+     * "immediately" after instantiation.
      */
     void initMenus() {
         JSONObject json = loadFromCache();
-        if (jsonIsUpToDate(json)) {
+        if (json != null && jsonIsUpToDate(json)) {
             menusOfTheWeek = buildMenuMap(json);
         } else {
             downloadData();
@@ -80,7 +83,7 @@ public abstract class Restaurant {
     JSONObject loadFromCache() {
         try {
             File cacheDir = context.getCacheDir();
-            File cacheFile = new File(cacheDir, id); // Cache files are identified by restaurant id
+            File cacheFile = new File(cacheDir, id + ".json"); // Cache files are identified by restaurant id
             BufferedReader reader = new BufferedReader(new FileReader(cacheFile));
             StringBuilder jsonString = new StringBuilder();
             String line;
@@ -91,8 +94,10 @@ public abstract class Restaurant {
             JSONObject json = new JSONObject(new JSONTokener(jsonString.toString()));
             return json;
         } catch (IOException e) {   // EXCEPT
+            e.printStackTrace();
             return null;
         } catch (JSONException e) {
+            e.printStackTrace();
             return null;
         }
     }
@@ -104,49 +109,44 @@ public abstract class Restaurant {
     void saveToCache(JSONObject json) {
         try {
             File cacheDir = context.getCacheDir();
-            File cacheFile = new File(cacheDir, id); // Cache files are identified by restaurant id
+            File cacheFile = new File(cacheDir, id + ".json"); // Cache files are identified by restaurant id
             BufferedWriter writer = new BufferedWriter(new FileWriter(cacheFile, false));   // Overwrite cache
             writer.write(json.toString(4));
         } catch (IOException e) {   // EXCEPT
-
+            e.printStackTrace();
         } catch (JSONException e) {
-
+            e.printStackTrace();
         }
     }
 
     /**
      * Build RestaurantMenu objects from JSON and insert them to menusOfTheWeek.
-     * @param   JSONObject json     JSONObject parsed from cached or downloaded data.
-     * @return  HashMap menuMap     A HashMap with dates as keys and RestaurantMenus as values
+     * @param json JSONObject parsed from cached or downloaded data.
+     * @return menuMap A HashMap with dates as keys and RestaurantMenus as values
      */
-    HashMap<Calendar, RestaurantMenu> buildMenuMap(JSONObject json) {
+    HashMap<String , RestaurantMenu> buildMenuMap(JSONObject json) {
         try {
             JSONObject menus = json.getJSONObject("menus");
             Iterator menusIterator = menus.keys();
-            HashMap<Calendar, RestaurantMenu> menuMap = new HashMap<Calendar, RestaurantMenu>();
+            HashMap<String, RestaurantMenu> menuMap = new HashMap<String, RestaurantMenu>();
             JSONArray menuArray;
             JSONObject jsonCourse;
-            int i;
 
             while (menusIterator.hasNext()) {   // Iterate "whole week"
-                i = 0;
-                String calString = (String) menusIterator.next();
-                Calendar menuCal = parseCalendar(calString);
-                menuArray = menus.getJSONArray(calString);
-                RestaurantMenu menu = new RestaurantMenu(this, menuCal);
-                while ((jsonCourse = menuArray.getJSONObject(i)) != null) { // Iterate courses of a single day
+                String date = (String) menusIterator.next();
+                menuArray = menus.getJSONArray(date);
+                RestaurantMenu menu = new RestaurantMenu(this, date);
+                for (int i = 0; i < menuArray.length(); i++){ // Iterate courses of a single day
+                    jsonCourse = menuArray.getJSONObject(i);
                     Course course = new Course(jsonCourse.getString("title_fi"), jsonCourse.getString("title_en"));
                     course.setProperties(jsonCourse.getString("properties"));
                     menu.addCourse(course);
-                    i++;
                 }
-                menuMap.put(menuCal, menu);
+                menuMap.put(date, menu);
             }
             return menuMap;
-        } catch (JSONException e) {
-
-        } catch (ParseException e) {
-
+        } catch (JSONException e) { // EXCEPT
+            e.printStackTrace();
         }
         return null;
     }
@@ -171,18 +171,17 @@ public abstract class Restaurant {
      */
     class RestaurantMenu {
         private Restaurant restaurant;
-        private Calendar calendar;
+        private String date;
         private ArrayList<Course> courses = new ArrayList<Course>();
 
-        RestaurantMenu(Restaurant restaurant, Calendar calendar) {
+        RestaurantMenu(Restaurant restaurant, String date) {
             this.restaurant = restaurant;
-            this.calendar = calendar;
+            this.date = date;
         }
 
         @Override
         public String toString() {
             StringBuilder collector = new StringBuilder();
-            collector.append(name + "\n");
             for (Course course: courses) {
                 collector.append(course.toString());
                 collector.append("\n");
@@ -223,6 +222,7 @@ public abstract class Restaurant {
         public String toString() {
             return titleFi;
         }
+
 
         /**
          * Set properties for course. Meaning of properties is as follows:

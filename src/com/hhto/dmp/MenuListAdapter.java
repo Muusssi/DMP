@@ -28,10 +28,11 @@ public class MenuListAdapter extends ArrayAdapter<Restaurant.RestaurantMenu> {
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(ROW_LAYOUT, parent, false);
-        TextView name = (TextView) rowView.findViewById(R.id.nameText);
-        TextView menu = (TextView) rowView.findViewById(R.id.menuText);
-        name.setText(menus.get(position).getRestaurant().getName());
-        menu.setText(menus.get(position).getRestaurant().toString());
+        TextView nameText = (TextView) rowView.findViewById(R.id.nameText);
+        TextView menuText = (TextView) rowView.findViewById(R.id.menuText);
+        Restaurant.RestaurantMenu menu = menus.get(position);
+        nameText.setText(menu.getRestaurant().getName());
+        menuText.setText(menu.toString());
 
         return rowView;
     }
