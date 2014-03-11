@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">DMP-Lunch</string>
+
+    <!-- Preference related strings -->
+    <string name="pref_summary_test_box">Test CheckBox summary</string>
+    <string name="pref_title_test_box">Test CheckBox title</string>
+    <string name="pref_title_selected_restaurants">Select restaurants to be displayed</string>
+    <string-array name="restaurants">
+        <item>"Sodexo"</item>
+    </string-array>
+    <string-array name="restaurant_ids">
+        <item>"sodexo"</item>
+    </string-array>
+
 </resources>
