@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/abm_settings"
+          android:title="@string/abm_title_settings"
+          android:icon="@drawable/ic_action_settings"
+          android:showAsAction="never" />
+
+    <item android:id="@+id/abm_about"
+        android:title="@string/abm_title_about"
+        android:icon="@drawable/ic_action_about"
+        android:showAsAction="never" />
+
+</menu>
