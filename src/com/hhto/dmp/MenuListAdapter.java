@@ -14,7 +14,7 @@ import java.util.List;
  */
 
 public class MenuListAdapter extends ArrayAdapter<Restaurant.RestaurantMenu> {
-    private static final int ROW_LAYOUT = R.layout.list_item;
+    private static final int ROW_LAYOUT = R.layout.menu_item;
     private final Context context;
     private final List<Restaurant.RestaurantMenu> menus;
 
