@@ -38,7 +38,7 @@ public class DataProvider {
      * Refresh the lists from where tabs fetch display data.
      */
     public static void refresh(SharedPreferences sharedPrefs) {
-        Set<String> restaurantIds = sharedPrefs.getStringSet("pref_key_selected_restaurants", null);
+        Set<String> restaurantIds = sharedPrefs.getStringSet("pref_key_selected_restaurants", new HashSet<String>());
         Calendar c = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         int weekday;

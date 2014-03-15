@@ -15,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import java.text.DateFormatSymbols;
+import java.util.Calendar;
 import java.util.Locale;
 
 
@@ -23,37 +24,55 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     private TabAdapter tabAdapter;
     private ActionBar actionBar;
     private SharedPreferences sharedPrefs;
-    // private DataProvider dataProvider;
     private String[] tabs = new String[5]; // = {"Mon", "Tue", "Wed", "Thu", "Fri"};
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        // Create and create stuff
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
         pager = (ViewPager) findViewById(R.id.pager);
         tabAdapter = new TabAdapter(getSupportFragmentManager());
         actionBar = getActionBar();
-        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-
 
         pager.setAdapter(tabAdapter);
-        // actionBar.setHomeButtonEnabled(false);
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);    // _TABS or _LIST
-        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         DataProvider.init(this);
         DataProvider.refresh(sharedPrefs);
 
-        DateFormatSymbols symbols = new DateFormatSymbols(new Locale("fi")); // Locale can be supplied as a parameter
+        // Select tab for current weekday
+        Calendar c = Calendar.getInstance();
+        switch (c.get(Calendar.DAY_OF_WEEK)) {
+            case Calendar.MONDAY:
+                pager.setCurrentItem(0);
+                break;
+            case Calendar.TUESDAY:
+                pager.setCurrentItem(1);
+                break;
+            case Calendar.WEDNESDAY:
+                pager.setCurrentItem(2);
+                break;
+            case Calendar.THURSDAY:
+                pager.setCurrentItem(3);
+                break;
+            case Calendar.FRIDAY:
+                pager.setCurrentItem(4);
+            default:
+                pager.setCurrentItem(0);
+        }
+
+        // Create tabs
+        DateFormatSymbols symbols = new DateFormatSymbols(); // Locale can be supplied as a parameter
         String[] weekdays = symbols.getShortWeekdays();
-        for (int i = 2; i < 7; i++) {   // Array start from 1 and we also want to skip Sunday
+        for (int i = 2; i < 7; i++) {   // Array starts from 1 and we also want to skip Sunday: offset is 2
             tabs[i-2] = weekdays[i];
             actionBar.addTab(actionBar.newTab().setText(weekdays[i])
                     .setTabListener(this));
         }
 
-        /**
-         * This enables tab swiping.
-         */
+        // This enables tab swiping
         pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             @Override
@@ -75,9 +94,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
     }
 
-    /**
-     * Create action bar menu.
-     */
+    // Create action bar overflow menu
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -86,9 +103,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
     }
 
-    /**
-     * Handle menu selections.
-     */
+    // Handle menu selections
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -117,9 +132,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         }
     }
 
-    /**
-     * These enable tab selecting.
-     */
+    // These enable tab selection
     @Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
         pager.setCurrentItem(tab.getPosition());
