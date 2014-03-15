@@ -1,7 +1,9 @@
 package com.hhto.dmp;
 
 import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -90,12 +92,25 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            // Launch settings activity
             case R.id.abm_settings:
                 Intent intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
                 return true;
+            // Create about dialog
             case R.id.abm_about:
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
+                    }
+                });
+                builder.setIcon(R.drawable.ic_action_about);
+                builder.setTitle(R.string.about_title);
+                builder.setMessage(R.string.about_text);
+                AlertDialog dialog = builder.create();
+                dialog.show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
