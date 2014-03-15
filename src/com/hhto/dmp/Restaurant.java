@@ -50,7 +50,7 @@ public abstract class Restaurant {
      * otherwise it is downloaded from web. This method should be called
      * "immediately" after instantiation.
      */
-    void initMenus() {
+    void init() {
         JSONObject json = loadFromCache();
         if (json != null && jsonIsUpToDate(json)) {
             menusOfTheWeek = buildMenuMap(json);

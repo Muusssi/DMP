@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
 /**
  * Created by hmhagberg on 8.3.2014.
@@ -14,7 +13,7 @@ import org.json.JSONTokener;
 public class SodexoRestaurant extends Restaurant {
 
     public SodexoRestaurant(Context context) {
-        super(context, "Sodexo", "sodexo");
+        super(context, "Sodexo", "Sodexo");
         // downloader = new Downloader();
     }
 
@@ -22,7 +21,7 @@ public class SodexoRestaurant extends Restaurant {
     void downloadData() {
         // downloader.execute(this);
         try {
-            String testJson = "{\"meta\":{\"week\":11},\"menus\":{\"2014-03-05\":[{\"title_fi\":\"Lihakämää\",\"title_en\":\"Meat kaemae\",\"properties\":\"L, G\",\"desc_fi\":\"\",\"desc_en\":\"\",\"desc_se\":\"\"},{\"title_fi\":\"Munia ja pekonia\",\"title_en\":\"Eggs and bacon\",\"properties\":\"\",\"desc_fi\":\"\",\"desc_en\":\"\",\"desc_se\":\"\"}]}}";
+            String testJson = "{\"meta\":{\"week\":11},\"menus\":{\"2014-03-11\":[{\"title_fi\":\"Lihakämää\",\"title_en\":\"Meat kaemae\",\"properties\":\"L, G\",\"desc_fi\":\"\",\"desc_en\":\"\",\"desc_se\":\"\"},{\"title_fi\":\"Munia ja pekonia\",\"title_en\":\"Eggs and bacon\",\"properties\":\"\",\"desc_fi\":\"\",\"desc_en\":\"\",\"desc_se\":\"\"}]}}";
             JSONObject json = new JSONObject(testJson);
             menusOfTheWeek = buildMenuMap(json);
         } catch (JSONException e) {

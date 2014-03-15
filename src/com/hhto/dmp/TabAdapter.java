@@ -17,15 +17,15 @@ public class TabAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int i) {
         switch (i) {
             case 0:
-                return new MenuFragment(DataProvider.MONDAY);
+                return new MenuFragment(DataProvider.monday);
             case 1:
-                return new MenuFragment(DataProvider.TUESDAY);
+                return new MenuFragment(DataProvider.tuesday);
             case 2:
-                return new MenuFragment(DataProvider.WEDNESDAY);
+                return new MenuFragment(DataProvider.wednesday);
             case 3:
-                return new MenuFragment(DataProvider.THURSDAY);
+                return new MenuFragment(DataProvider.thursday);
             case 4:
-                return new MenuFragment(DataProvider.FRIDAY);
+                return new MenuFragment(DataProvider.friday);
         }
         return null;
     }

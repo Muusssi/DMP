@@ -21,7 +21,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     private TabAdapter tabAdapter;
     private ActionBar actionBar;
     private SharedPreferences sharedPrefs;
-    private DataProvider dataProvider;
+    // private DataProvider dataProvider;
     private String[] tabs = new String[5]; // = {"Mon", "Tue", "Wed", "Thu", "Fri"};
 
     @Override
@@ -32,12 +32,14 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         tabAdapter = new TabAdapter(getSupportFragmentManager());
         actionBar = getActionBar();
         sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        dataProvider = new DataProvider(this);
+
 
         pager.setAdapter(tabAdapter);
         // actionBar.setHomeButtonEnabled(false);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);    // _TABS or _LIST
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+        DataProvider.init(this);
+        DataProvider.refresh(sharedPrefs);
 
         DateFormatSymbols symbols = new DateFormatSymbols(new Locale("fi")); // Locale can be supplied as a parameter
         String[] weekdays = symbols.getShortWeekdays();
