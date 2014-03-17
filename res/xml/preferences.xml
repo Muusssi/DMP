@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <CheckBoxPreference
-        android:key="pref_key_test_box"
-        android:title="@string/pref_title_test_box"
-        android:summary="@string/pref_summary_test_box"
-        android:defaultValue="true" />
 
     <MultiSelectListPreference
         android:key="pref_key_selected_restaurants"
         android:title="@string/pref_title_selected_restaurants"
         android:entries="@array/restaurants"
-        android:entryValues="@array/restaurant_ids" />
+        android:entryValues="@array/restaurant_ids"
+        android:defaultValue="@array/restaurant_ids" />
+
 
 </PreferenceScreen>
