@@ -15,10 +15,19 @@
     <string-array name="restaurant_ids">
         <item>"sodexo"</item>
     </string-array>
+    <string-array name="languages">
+        <item>"Suomi"</item>
+        <item>"English</item>
+    </string-array>
+    <string-array name="language_ids">
+        <item>"fi"</item>
+        <item>"en"</item>
+    </string-array>
 
     <!-- About -->
     <string name="about_title">About</string>
     <string name="about_text">This thing is very much work-in-progress!\nCreated by HH and TO.</string>
+    <string name="pref_title_show_properties">Show properties</string>
 
 
 </resources>

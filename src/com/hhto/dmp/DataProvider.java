@@ -15,13 +15,12 @@ public class DataProvider {
      * DataProvider should update these lists accordingly. (E.g. remove menu
      * if user unchecks the corresponding restaurant).
      */
-    public static List<Restaurant.RestaurantMenu> monday = new ArrayList<Restaurant.RestaurantMenu>();
-    public static List<Restaurant.RestaurantMenu> tuesday = new ArrayList<Restaurant.RestaurantMenu>();
-    public static List<Restaurant.RestaurantMenu> wednesday = new ArrayList<Restaurant.RestaurantMenu>();
-    public static List<Restaurant.RestaurantMenu> thursday = new ArrayList<Restaurant.RestaurantMenu>();
-    public static List<Restaurant.RestaurantMenu> friday = new ArrayList<Restaurant.RestaurantMenu>();
+    static List<Restaurant.RestaurantMenu> monday = new ArrayList<Restaurant.RestaurantMenu>();
+    static List<Restaurant.RestaurantMenu> tuesday = new ArrayList<Restaurant.RestaurantMenu>();
+    static List<Restaurant.RestaurantMenu> wednesday = new ArrayList<Restaurant.RestaurantMenu>();
+    static List<Restaurant.RestaurantMenu> thursday = new ArrayList<Restaurant.RestaurantMenu>();
+    static List<Restaurant.RestaurantMenu> friday = new ArrayList<Restaurant.RestaurantMenu>();
     static Map<Integer, List<Restaurant.RestaurantMenu>> menuLists = new HashMap<Integer, List<Restaurant.RestaurantMenu>>(5);
-    // static int[] weekdays = {Calendar.MONDAY, Calendar.TUESDAY, Calendar.WEDNESDAY, Calendar.THURSDAY, Calendar.FRIDAY};
     static Map<String, Restaurant> restaurants = new HashMap<String, Restaurant>();
 
     static {
@@ -49,7 +48,7 @@ public class DataProvider {
         Set<String> restaurantIds = sharedPrefs.getStringSet("pref_key_selected_restaurants", new HashSet<String>());
         Calendar c = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        int weekday;
+        Integer weekday;
         List<Restaurant.RestaurantMenu> menuList;
 
         for (Map.Entry<Integer, List<Restaurant.RestaurantMenu>> entry: menuLists.entrySet()) {

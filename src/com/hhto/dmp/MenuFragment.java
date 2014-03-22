@@ -30,7 +30,8 @@ public class MenuFragment extends Fragment {
         List<Restaurant.RestaurantMenu> menuList = DataProvider.getMenuList(weekday);
         View view = inflater.inflate(R.layout.menu_fragment, container, false);
         ListView cardList = (ListView) view.findViewById(R.id.cardList);
-        cardList.setAdapter(new MenuListAdapter(getActivity(), menuList));
+        MenuListAdapter adapter = new MenuListAdapter(getActivity(), menuList);
+        cardList.setAdapter(adapter);
         return view;
     }
 }

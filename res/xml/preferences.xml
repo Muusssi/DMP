@@ -9,5 +9,16 @@
         android:entryValues="@array/restaurant_ids"
         android:defaultValue="@array/restaurant_ids" />
 
+    <ListPreference
+        android:key="pref_key_language"
+        android:title="Menu language"
+        android:entries="@array/languages"
+        android:entryValues="@array/language_ids"
+        android:defaultValue="en" />
+
+    <CheckBoxPreference
+        android:key="pref_key_show_properties"
+        android:title="@string/pref_title_show_properties"
+        android:defaultValue="true" />
 
 </PreferenceScreen>

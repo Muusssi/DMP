@@ -1,6 +1,8 @@
 package com.hhto.dmp;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,9 +16,9 @@ import java.util.List;
  */
 
 public class MenuListAdapter extends ArrayAdapter<Restaurant.RestaurantMenu> {
-    private static final int ROW_LAYOUT = R.layout.menu_item;
-    private final Context context;
-    private final List<Restaurant.RestaurantMenu> menus;
+    private static int ROW_LAYOUT = R.layout.menu_item;
+    private Context context;
+    private List<Restaurant.RestaurantMenu> menus;
 
     public MenuListAdapter(Context context, List<Restaurant.RestaurantMenu> menus) {
         super(context, ROW_LAYOUT, menus);
@@ -28,11 +30,14 @@ public class MenuListAdapter extends ArrayAdapter<Restaurant.RestaurantMenu> {
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(ROW_LAYOUT, parent, false);
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
         TextView nameText = (TextView) rowView.findViewById(R.id.nameText);
         TextView menuText = (TextView) rowView.findViewById(R.id.menuText);
         Restaurant.RestaurantMenu menu = menus.get(position);
         nameText.setText(menu.getRestaurant().getName());
-        menuText.setText(menu.toString());
+        String language = pref.getString("pref_key_language", "en");
+        Boolean showProperties = pref.getBoolean("pref_key_show_properties", true);
+        menuText.setText(menu.format(language, showProperties));
 
         return rowView;
     }

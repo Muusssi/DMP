@@ -16,22 +16,20 @@ import android.view.MenuItem;
 
 import java.text.DateFormatSymbols;
 import java.util.Calendar;
-import java.util.Locale;
 
 
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
     private ViewPager pager;
     private TabAdapter tabAdapter;
     private ActionBar actionBar;
-    private SharedPreferences sharedPrefs;
-    private String[] tabs = new String[5]; // = {"Mon", "Tue", "Wed", "Thu", "Fri"};
+    private SharedPreferences pref;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         // Create and create stuff
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        pref = PreferenceManager.getDefaultSharedPreferences(this);
         PreferenceManager.setDefaultValues(this, R.xml.preferences, true);
         pager = (ViewPager) findViewById(R.id.pager);
         tabAdapter = new TabAdapter(getSupportFragmentManager());
@@ -40,7 +38,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         pager.setAdapter(tabAdapter);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         DataProvider.init(this);
-        DataProvider.refresh(sharedPrefs);
+        DataProvider.refresh(pref);
 
         // Select tab for current weekday
         Calendar c = Calendar.getInstance();
@@ -67,7 +65,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         DateFormatSymbols symbols = new DateFormatSymbols(); // Locale can be supplied as a parameter
         String[] weekdays = symbols.getShortWeekdays();
         for (int i = 2; i < 7; i++) {   // Array starts from 1 and we also want to skip Sunday: offset is 2
-            tabs[i-2] = weekdays[i];
             actionBar.addTab(actionBar.newTab().setText(weekdays[i])
                     .setTabListener(this));
         }
@@ -92,6 +89,12 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         });
 
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        DataProvider.refresh(pref);
     }
 
     // Create action bar overflow menu

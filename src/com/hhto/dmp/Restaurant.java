@@ -138,8 +138,7 @@ public abstract class Restaurant {
                 RestaurantMenu menu = new RestaurantMenu(this, date);
                 for (int i = 0; i < menuArray.length(); i++){ // Iterate courses of a single day
                     jsonCourse = menuArray.getJSONObject(i);
-                    Course course = new Course(jsonCourse.getString("title_fi"), jsonCourse.getString("title_en"));
-                    course.setProperties(jsonCourse.getString("properties"));
+                    Course course = new Course(jsonCourse.getString("title_fi"), jsonCourse.getString("title_en"), jsonCourse.getString("properties"));
                     menu.addCourse(course);
                 }
                 menuMap.put(date, menu);
@@ -181,9 +180,13 @@ public abstract class Restaurant {
 
         @Override
         public String toString() {
+            return restaurant + " " + date;
+        }
+
+        public String format(String language, Boolean showProperties) {
             StringBuilder collector = new StringBuilder();
             for (Course course: courses) {
-                collector.append(course.toString());
+                collector.append(course.format(language, showProperties));
                 collector.append("\n");
             }
             return collector.toString();
@@ -207,55 +210,35 @@ public abstract class Restaurant {
      * A single course of a menu.
      */
     class Course {
-        private final String titleFi;
-        private final String titleEn;
-        private boolean glutenFree = false;     // Property "G"
-        private boolean lactoseFree = false;    // Property "L"
-        private boolean milkFree = false;       // Property "M"
+        private String titleFi;
+        private String titleEn;
+        private String properties;
 
-        Course(String titleFi, String titleEn) {
+        Course(String titleFi, String titleEn, String properties) {
             this.titleFi = titleFi;
             this.titleEn = titleEn;
+            this.properties = properties;
         }
 
         @Override
         public String toString() {
-            return titleFi;
+            return titleEn;
         }
 
-
-        /**
-         * Set properties for course. Meaning of properties is as follows:
-         * "G" = gluten-free
-         * "L" = lactose-free
-         * "M" = milk-free
-         * @param properties: A single String or an array of Strings containing
-         *                  properties for course.
-         */
-        public void setProperties(String... properties) {
-            for (String property: properties) {
-                if (property.contains("G")) {
-                    glutenFree = true;
-                }
-                if (property.contains("L") && !property.contains("VL")) {    // Don't label low-lactose as lactose free
-                    lactoseFree = true;
-                }
-                if (property.contains("M")) {
-                    milkFree = true;
-                }
+        public String format(String language, Boolean showProperties) {
+            StringBuilder collector = new StringBuilder();
+            if (language.equals("fi")) {
+                collector.append(titleFi);
+            } else {
+                collector.append(titleEn);
             }
+            if (showProperties) {
+                collector.append(" ");
+                collector.append(properties);
+            }
+            return collector.toString();
         }
 
-        public boolean isGlutenFree() {
-            return glutenFree;
-        }
 
-        public boolean isLactoseFree() {
-            return lactoseFree;
-        }
-
-        public boolean isMilkFree() {
-            return milkFree;
-        }
     }
 }
