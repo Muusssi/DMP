@@ -4,6 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import java.util.Calendar;
+
 /**
  * Created by hmhagberg on 13.3.2014.
  */
@@ -17,15 +19,15 @@ public class TabAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int i) {
         switch (i) {
             case 0:
-                return new MenuFragment(DataProvider.monday);
+                return MenuFragment.newInstance(Calendar.MONDAY);
             case 1:
-                return new MenuFragment(DataProvider.tuesday);
+                return MenuFragment.newInstance(Calendar.TUESDAY);
             case 2:
-                return new MenuFragment(DataProvider.wednesday);
+                return MenuFragment.newInstance(Calendar.WEDNESDAY);
             case 3:
-                return new MenuFragment(DataProvider.thursday);
+                return MenuFragment.newInstance(Calendar.THURSDAY);
             case 4:
-                return new MenuFragment(DataProvider.friday);
+                return MenuFragment.newInstance(Calendar.FRIDAY);
         }
         return null;
     }

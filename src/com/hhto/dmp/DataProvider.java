@@ -20,9 +20,17 @@ public class DataProvider {
     public static List<Restaurant.RestaurantMenu> wednesday = new ArrayList<Restaurant.RestaurantMenu>();
     public static List<Restaurant.RestaurantMenu> thursday = new ArrayList<Restaurant.RestaurantMenu>();
     public static List<Restaurant.RestaurantMenu> friday = new ArrayList<Restaurant.RestaurantMenu>();
-    static List[] menuLists = {monday, tuesday, wednesday, thursday, friday};
-    static int[] weekdays = {Calendar.MONDAY, Calendar.TUESDAY, Calendar.WEDNESDAY, Calendar.THURSDAY, Calendar.FRIDAY};
+    static Map<Integer, List<Restaurant.RestaurantMenu>> menuLists = new HashMap<Integer, List<Restaurant.RestaurantMenu>>(5);
+    // static int[] weekdays = {Calendar.MONDAY, Calendar.TUESDAY, Calendar.WEDNESDAY, Calendar.THURSDAY, Calendar.FRIDAY};
     static Map<String, Restaurant> restaurants = new HashMap<String, Restaurant>();
+
+    static {
+        menuLists.put(Calendar.MONDAY, monday);
+        menuLists.put(Calendar.TUESDAY, tuesday);
+        menuLists.put(Calendar.WEDNESDAY, wednesday);
+        menuLists.put(Calendar.THURSDAY, thursday);
+        menuLists.put(Calendar.FRIDAY, friday);
+    }
 
     /**
      * Initialize restaurants.
@@ -44,9 +52,9 @@ public class DataProvider {
         int weekday;
         List<Restaurant.RestaurantMenu> menuList;
 
-        for (int i = 0; i < 5; i++) {
-            weekday = weekdays[i];
-            menuList = menuLists[i];
+        for (Map.Entry<Integer, List<Restaurant.RestaurantMenu>> entry: menuLists.entrySet()) {
+            weekday = entry.getKey();
+            menuList = entry.getValue();
             menuList.clear();
             c.set(Calendar.DAY_OF_WEEK, weekday);
             String date = dateFormat.format(c.getTime());
@@ -58,7 +66,10 @@ public class DataProvider {
                 }
             }
         }
+    }
 
+    public static List<Restaurant.RestaurantMenu> getMenuList(Integer weekday) {
+        return menuLists.get(weekday);
     }
 
 }
