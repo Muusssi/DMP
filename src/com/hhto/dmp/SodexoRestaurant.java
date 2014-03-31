@@ -5,12 +5,12 @@ import android.content.Context;
 import android.os.AsyncTask;
 import org.json.JSONException;
 import org.json.JSONObject;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.IOException;
+
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.MalformedURLException;
+import java.util.*;
 
 
 /**
@@ -26,46 +26,59 @@ public class SodexoRestaurant extends Restaurant {
 
     @Override
     void downloadData() {
-        Downloader downloader = new Downloader();
 
+        DownloadJsonTask downloader = new DownloadJsonTask();
         downloader.execute(this);
+
         /*
         try {
-            String testJson = "{\"meta\":{\"week\":13},\"menus\":{\"2014-03-25\":[{\"title_fi\":\"Vettä ja leipää\",\"title_en\":\"Meat kaemae\",\"properties\":\"L, G\",\"desc_fi\":\"\",\"desc_en\":\"\",\"desc_se\":\"\"},{\"title_fi\":\"Munia ja pekonia\",\"title_en\":\"Eggs and bacon\",\"properties\":\"\",\"desc_fi\":\"\",\"desc_en\":\"\",\"desc_se\":\"\"}]}}";
+            String testJson = "{\"meta\":{\"week\":14},\"menus\":{\"2014-03-31\":[{\"title_fi\":\"Vettä ja leipää\",\"title_en\":\"Meat kaemae\",\"properties\":\"L, G\",\"desc_fi\":\"\",\"desc_en\":\"\",\"desc_se\":\"\"},{\"title_fi\":\"Munia ja pekonia\",\"title_en\":\"Eggs and bacon\",\"properties\":\"\",\"desc_fi\":\"\",\"desc_en\":\"\",\"desc_se\":\"\"}]}}";
             JSONObject json = new JSONObject(testJson);
             menusOfTheWeek = buildMenuMap(json);
         } catch (JSONException e) {
             e.printStackTrace();
         }
         */
+
     }
 
-    class Downloader extends AsyncTask<SodexoRestaurant, Void, String> {
-
+    class DownloadJsonTask extends AsyncTask<SodexoRestaurant, Void, String> {
+        SodexoRestaurant restaurant = null;
         
         @Override
-        protected String doInBackground(SodexoRestaurant... params) {
+        protected String doInBackground(SodexoRestaurant... sRestaurants) {
+
+
+            restaurant = sRestaurants[0];
+
             //Downloads Json from www.sodexo.fi
+            HttpURLConnection connection = null;
+            String[] responseBuffer = null;
+
             try {
-                String url = "http://www.sodexo.fi/ruokalistat/output/daily_json/"+params[0].getId()+"/2014/03/26/fi";
-                URL urlObj = new URL(url);
 
-                HttpURLConnection conn = (HttpURLConnection) urlObj.openConnection();
+                // TODO Get the time parameters right
+                String urlString = "http://www.sodexo.fi/ruokalistat/output/daily_json/"+sRestaurants[0].getId()+"/2014/03/31/fi";
 
-                //Read the response
-                BufferedReader in = new BufferedReader(
-                        new InputStreamReader(conn.getInputStream()));
+                URL urlObj = new URL(urlString);
+                connection = (HttpURLConnection) urlObj.openConnection();
+                connection.setRequestMethod("GET");
+                connection.connect();
+                if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                    return null; // Possibly needs error handling
+                }
+
+                BufferedReader inputStream = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 String inputLine;
                 StringBuffer response = new StringBuffer();
-
-                while ((inputLine = in.readLine()) != null) {
+                while((inputLine = inputStream.readLine()) != null) {
                     response.append(inputLine);
                 }
-                in.close();
-                //Response Json String
-                String s = response.toString();
 
-                return s;
+                connection.disconnect();
+                String sResponse = response.toString();
+
+                return sResponse;
 
             }
             catch (MalformedURLException e) {
@@ -81,7 +94,17 @@ public class SodexoRestaurant extends Restaurant {
         @Override
         protected void onPostExecute(String s) {
             // TODO Parse downloaded JSON
+            try {
 
+                String testJson = "{\"meta\":{\"week\":14},\"menus\":{\"2014-03-31\":[{\"title_fi\":\"Vettä ja leipää\",\"title_en\":\"Meat kaemae\",\"properties\":\"L, G\",\"desc_fi\":\"\",\"desc_en\":\"\",\"desc_se\":\"\"},{\"title_fi\":\"Munia ja pekonia\",\"title_en\":\"Eggs and bacon\",\"properties\":\"\",\"desc_fi\":\"\",\"desc_en\":\"\",\"desc_se\":\"\"}]}}";
+                JSONObject json = new JSONObject(testJson);
+                restaurant.menusOfTheWeek = restaurant.buildMenuMap(json);
+
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
         }
     }
