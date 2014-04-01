@@ -3,6 +3,7 @@ package com.hhto.dmp;
 import android.content.Context;
 import android.os.AsyncTask;
 import org.json.JSONObject;
+import org.json.JSONArray;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -113,37 +114,52 @@ public class SodexoRestaurant extends Restaurant {
         protected void onPostExecute(String[] weeksJson) {
             // TODO Parse downloaded JSON
 
+
             try {
 
                 if (weeksJson != null) {
                     Calendar cal = Calendar.getInstance();
                     int weekNo = cal.get(Calendar.WEEK_OF_YEAR);
 
+                    int weekDay = cal.get(Calendar.DAY_OF_WEEK);
+                    cal.add(Calendar.DATE, -(weekDay-2));
+
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-                    String date = sdf.format(new Date());
+                    String date;
 
                     JSONObject daysJsonO;
                     JSONObject daysDownloadedJsonO;
+                    JSONArray courseArray;
                     JSONObject parsedJson = new JSONObject("{\"meta\":{\"week\":"+weekNo+"},\"menus\":{}}");
                     System.out.println("#####1#"+parsedJson.toString());
 
 
                     for (int i=0; i<5; i++) {
+                        date = sdf.format(cal.getTime());
                         System.out.println("-----:"+weeksJson[i]);
                         daysDownloadedJsonO = new JSONObject(weeksJson[i]);
-                        daysDownloadedJsonO = daysDownloadedJsonO.getJSONObject("courses");
-                        System.out.println(daysDownloadedJsonO.toString());
+
+                        courseArray = daysDownloadedJsonO.getJSONArray("courses");
+                        System.out.println("#####Array#" + courseArray.toString());
+
                         daysJsonO = new JSONObject("{\""+date+"\":{}}");
-                        daysJsonO.accumulate(date, daysDownloadedJsonO);
-                        System.out.println("#####2#"+daysJsonO.toString());
-                        parsedJson.accumulate("menus", daysJsonO);
+                        daysJsonO.put(date, courseArray);
+                        System.out.println("#####2#" + daysJsonO.toString());
+                        if (i == 0) {
+                            parsedJson.put("menus", daysJsonO);
+                        }
+                        else {
+                            parsedJson.accumulate("menus", daysJsonO);
+                        }
                         System.out.println("#####3#"+parsedJson.toString());
 
+                        cal.add(Calendar.DATE, 1);
                     }
+                    restaurant.menusOfTheWeek = restaurant.buildMenuMap(parsedJson);
                 }
 
                 // Refresh DataProvider and consequently UI
-                DataProvider.refresh(context);
+                //DataProvider.refresh(context);
             } catch (Exception e) {
                 e.printStackTrace();
             }
