@@ -146,13 +146,8 @@ public class SodexoRestaurant extends Restaurant {
                     }
                 }
 
-                /*
-                String testJson = "{\"meta\":{\"week\":14},\"menus\":{\"2014-03-31\":[{\"title_fi\":\"Vettä ja leipää\",\"title_en\":\"Meat kaemae\",\"properties\":\"L, G\",\"desc_fi\":\"\",\"desc_en\":\"\",\"desc_se\":\"\"},{\"title_fi\":\"Munia ja pekonia\",\"title_en\":\"Eggs and bacon\",\"properties\":\"\",\"desc_fi\":\"\",\"desc_en\":\"\",\"desc_se\":\"\"}]}}";
-                JSONObject json = new JSONObject(testJson);
-                restaurant.menusOfTheWeek = restaurant.buildMenuMap(json);
-                */
-
-
+                // Refresh DataProvider and consequently UI
+                DataProvider.refresh(context);
             } catch (Exception e) {
                 e.printStackTrace();
             }

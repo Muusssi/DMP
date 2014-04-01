@@ -2,6 +2,7 @@ package com.hhto.dmp;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -35,7 +36,7 @@ public class DataProvider {
      * Initialize restaurants.
      */
     public static void init(Context context) {
-        restaurants.put("sodexo", new SodexoRestaurant(context));
+        restaurants.put("141", new SodexoRestaurant(context));
         for (Restaurant restaurant: restaurants.values()) {
             restaurant.init();
         }
@@ -44,8 +45,9 @@ public class DataProvider {
     /**
      * Refresh the lists from where tabs fetch display data.
      */
-    public static void refresh(SharedPreferences sharedPrefs) {
-        Set<String> restaurantIds = sharedPrefs.getStringSet("pref_key_selected_restaurants", new HashSet<String>());
+    public static void refresh(Context context) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+        Set<String> restaurantIds = pref.getStringSet("pref_key_selected_restaurants", new HashSet<String>());
         Calendar c = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Integer weekday;
