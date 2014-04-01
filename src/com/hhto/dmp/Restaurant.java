@@ -68,9 +68,9 @@ public abstract class Restaurant {
      */
     boolean jsonIsUpToDate(JSONObject json) {
         try {
-            Calendar today = Calendar.getInstance();
+            Calendar cal = Calendar.getInstance();
             int week = json.getJSONObject("meta").getInt("week");
-            return today.WEEK_OF_YEAR == week;
+            return cal.get(Calendar.WEEK_OF_YEAR) == week;
         } catch (JSONException e) {
             return false;
         }
