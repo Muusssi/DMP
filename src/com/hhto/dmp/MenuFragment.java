@@ -14,6 +14,7 @@ import java.util.List;
 /**
  * Created by hmhagberg on 13.3.2014.
  */
+
 public class MenuFragment extends Fragment {
 
     public static MenuFragment newInstance(Integer weekday) {

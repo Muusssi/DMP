@@ -10,6 +10,7 @@ import java.util.*;
 /**
  * Created by tommi on 26.2.2014.
  */
+
 public class DataProvider {
     /**
      * These lists hold menus for corresponding weekday of the current week.
@@ -36,7 +37,7 @@ public class DataProvider {
      * Initialize restaurants.
      */
     public static void init(Context context) {
-        restaurants.put("141", new SodexoRestaurant(context));
+        restaurants.put("sodexo", new SodexoRestaurant(context));
         for (Restaurant restaurant: restaurants.values()) {
             restaurant.init();
         }

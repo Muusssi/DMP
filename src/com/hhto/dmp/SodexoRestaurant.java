@@ -1,9 +1,7 @@
 package com.hhto.dmp;
 
-
 import android.content.Context;
 import android.os.AsyncTask;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -14,7 +12,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-
 /**
  * Created by hmhagberg on 8.3.2014.
  */
@@ -23,7 +20,6 @@ public class SodexoRestaurant extends Restaurant {
 
     public SodexoRestaurant(Context context) {
         super(context, "Sodexo", "141");
-
     }
 
     @Override
@@ -76,7 +72,7 @@ public class SodexoRestaurant extends Restaurant {
                     month = cal.get(Calendar.MONTH) +1; //Months start from 0
                     day = cal.get(Calendar.DAY_OF_MONTH);
 
-                    urlString = "http://www.sodexo.fi/ruokalistat/output/daily_json/"+sRestaurants[0].getId()+"/"
+                    urlString = "http://www.sodexo.fi/ruokalistat/output/daily_json/"+sRestaurants[0].getUrlId()+"/"
                             +year+"/"+month +"/"+day+"/fi";
                     System.out.println(":::Haetaan:"+urlString);
                     urlObj = new URL(urlString);

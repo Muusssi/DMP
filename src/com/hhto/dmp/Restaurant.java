@@ -1,7 +1,6 @@
 package com.hhto.dmp;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,21 +23,21 @@ import java.util.*;
 public abstract class Restaurant {
     Context context;
     String name;
-    String id;
+    String urlId;
     HashMap<String, RestaurantMenu> menusOfTheWeek = new HashMap<String, RestaurantMenu>();
 
-    public Restaurant(Context context, String name, String id) {
+    public Restaurant(Context context, String name, String urlId) {
         this.context = context;
         this.name = name;
-        this.id = id;
+        this.urlId = urlId;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getId() {
-        return id;
+    public String getUrlId() {
+        return urlId;
     }
 
     public RestaurantMenu getMenu(String date) {
@@ -83,7 +82,7 @@ public abstract class Restaurant {
     JSONObject loadFromCache() {
         try {
             File cacheDir = context.getCacheDir();
-            File cacheFile = new File(cacheDir, id + ".json"); // Cache files are identified by restaurant id
+            File cacheFile = new File(cacheDir, urlId + ".json"); // Cache files are identified by restaurant urlId
             BufferedReader reader = new BufferedReader(new FileReader(cacheFile));
             StringBuilder jsonString = new StringBuilder();
             String line;
@@ -109,7 +108,7 @@ public abstract class Restaurant {
     void saveToCache(JSONObject json) {
         try {
             File cacheDir = context.getCacheDir();
-            File cacheFile = new File(cacheDir, id + ".json"); // Cache files are identified by restaurant id
+            File cacheFile = new File(cacheDir, urlId + ".json"); // Cache files are identified by restaurant urlId
             BufferedWriter writer = new BufferedWriter(new FileWriter(cacheFile, false));   // Overwrite cache
             writer.write(json.toString(4));
         } catch (IOException e) {   // EXCEPT
@@ -124,7 +123,7 @@ public abstract class Restaurant {
      * @param json JSONObject parsed from cached or downloaded data.
      * @return menuMap A HashMap with dates as keys and RestaurantMenus as values
      */
-    HashMap<String , RestaurantMenu> buildMenuMap(JSONObject json) {
+    HashMap<String, RestaurantMenu> buildMenuMap(JSONObject json) {
         try {
             JSONObject menus = json.getJSONObject("menus");
             Iterator menusIterator = menus.keys();
