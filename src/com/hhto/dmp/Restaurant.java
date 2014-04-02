@@ -130,8 +130,6 @@ public abstract class Restaurant {
      * @param json JSONObject parsed from cached or downloaded data.
      * @return menuMap A HashMap with dates as keys and RestaurantMenus as values
      */
-
-
     HashMap<String, RestaurantMenu> buildMenuMap(JSONObject json) {
         try {
             JSONArray menusArray = json.getJSONArray("menus");
@@ -194,7 +192,7 @@ public abstract class Restaurant {
     class RestaurantMenu {
         private Restaurant restaurant;
         private String date;
-        private ArrayList<Course> courses = new ArrayList<Course>();
+        private List<Course> courses = new ArrayList<Course>();
 
         RestaurantMenu(Restaurant restaurant, String date) {
             this.restaurant = restaurant;
@@ -206,14 +204,6 @@ public abstract class Restaurant {
             return restaurant + " " + date;
         }
 
-        public String format(String language, Boolean showProperties) {
-            StringBuilder collector = new StringBuilder();
-            for (Course course: courses) {
-                collector.append(course.format(language, showProperties));
-                collector.append("\n");
-            }
-            return collector.toString();
-        }
 
         public Restaurant getRestaurant() {
             return restaurant;
@@ -223,7 +213,7 @@ public abstract class Restaurant {
             courses.add(course);
         }
 
-        public ArrayList<Course> getCourses() {
+        public List<Course> getCourses() {
             return courses;
         }
     }
@@ -248,20 +238,17 @@ public abstract class Restaurant {
             return titleEn;
         }
 
-        public String format(String language, Boolean showProperties) {
-            StringBuilder collector = new StringBuilder();
+        public String getTitle(String language) {
             if (language.equals("fi")) {
-                collector.append(titleFi);
+                return titleFi;
             } else {
-                collector.append(titleEn);
+                return titleEn;
             }
-            if (showProperties) {
-                collector.append(" ");
-                collector.append(properties);
-            }
-            return collector.toString();
         }
 
+        public String getProperties() {
+            return properties;
+        }
 
     }
 }

@@ -23,7 +23,7 @@ public class TabAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int i) {
-        Log.d(TAG, "Creating tab number " + i);
+        Log.v(TAG, "Creating tab number " + i);
         switch (i) {
             case 0:
                 return MenuFragment.newInstance(Calendar.MONDAY);

@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="CardText">
-        <item name="android:textColor">#06799F</item>
         <item name="android:fontFamily">sans-serif-light</item>
         <item name="android:lineSpacingExtra">5sp</item>
     </style>
 
     <style name="CardText.Big" parent="CardText">
-        <item name="android:textSize">40sp</item>
+        <item name="android:textSize">35sp</item>
     </style>
 
     <style name="CardText.Small" parent="CardText">
-        <item name="android:textSize">25sp</item>
+        <item name="android:textSize">20sp</item>
     </style>
 
 </resources>

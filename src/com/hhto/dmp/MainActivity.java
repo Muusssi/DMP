@@ -72,9 +72,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         // DataProvider.refresh(this);
 
     }
-
-
-
     @Override
     protected void onStart() {
         super.onStart();

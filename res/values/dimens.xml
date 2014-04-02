@@ -2,4 +2,5 @@
 <resources>
     <dimen name="card_corner_radius">1dp</dimen>
     <dimen name="card_padding">25dip</dimen>
+    <dimen name="course_spacing">2dp</dimen>
 </resources>

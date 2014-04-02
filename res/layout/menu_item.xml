@@ -9,9 +9,11 @@
     android:background="@drawable/card">
 
 
+
     <TextView
         style="@style/CardText.Big"
         android:id="@+id/nameText"
+        android:textColor="@color/name_blue"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
