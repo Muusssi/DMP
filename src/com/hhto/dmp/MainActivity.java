@@ -21,6 +21,7 @@ import java.util.Calendar;
 
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
     private static final String TAG = "MainActivity";
+    private static Integer selectedTab = -1;
     private ViewPager pager;
     private TabAdapter tabAdapter;
     private ActionBar actionBar;
@@ -50,49 +51,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                     .setTabListener(this));
         }
 
-        // Select tab for current weekday
-        Log.d(TAG, "Selecting tab");
-        if (savedInstanceState != null) {  // If current day is Saturday or Sunday set day to Monday instead
-            Integer selectedTab = savedInstanceState.getInt("tab", 0);
-            pager.setCurrentItem(selectedTab);
-            actionBar.setSelectedNavigationItem(selectedTab);
-        } else {
-            Calendar c = Calendar.getInstance();
-            Integer selectedTab = c.get(Calendar.DAY_OF_WEEK) - 2;    // Again offset
-            if (selectedTab > 4) {
-                selectedTab = 0;
-            }
-            pager.setCurrentItem(selectedTab);
-            actionBar.setSelectedNavigationItem(selectedTab);
-        }
-
-        /*
-        switch (c.get(Calendar.DAY_OF_WEEK)) {
-            case Calendar.MONDAY:
-                pager.setCurrentItem(0);
-                actionBar.setSelectedNavigationItem(0);
-                break;
-            case Calendar.TUESDAY:
-                pager.setCurrentItem(1);
-                actionBar.setSelectedNavigationItem(1);
-                break;
-            case Calendar.WEDNESDAY:
-                pager.setCurrentItem(2);
-                actionBar.setSelectedNavigationItem(2);
-                break;
-            case Calendar.THURSDAY:
-                pager.setCurrentItem(3);
-                actionBar.setSelectedNavigationItem(3);
-                break;
-            case Calendar.FRIDAY:
-                pager.setCurrentItem(4);
-                actionBar.setSelectedNavigationItem(4);
-            default:
-                pager.setCurrentItem(0);
-                actionBar.setSelectedNavigationItem(0);
-        }
-        */
-
         // This enables tab swiping
         pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
@@ -115,12 +73,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putInt("tab", getActionBar().getSelectedNavigationIndex());
-        Log.d(TAG, "Saved tab " + getActionBar().getSelectedNavigationIndex());
-    }
 
 
     @Override
@@ -134,8 +86,27 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     @Override
     protected void onResume() {
         super.onResume();
-        // Log.d(TAG, "Resuming");
-        // DataProvider.refresh(this);
+        // Select tab for current weekday
+        Log.d(TAG, "Resuming");
+        if (selectedTab != -1) {    // If tab has been already set
+            pager.setCurrentItem(selectedTab);
+            actionBar.setSelectedNavigationItem(selectedTab);
+        } else {
+            Calendar c = Calendar.getInstance();
+            selectedTab = c.get(Calendar.DAY_OF_WEEK) - 2;    // Again offset
+            if (selectedTab > 4) {  // If current day is Saturday or Sunday set day to Monday instead
+                selectedTab = 0;
+            }
+            pager.setCurrentItem(selectedTab);
+            actionBar.setSelectedNavigationItem(selectedTab);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "Pausing");
+        selectedTab = getActionBar().getSelectedNavigationIndex();
     }
 
     // Create action bar overflow menu
