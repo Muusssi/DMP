@@ -3,6 +3,7 @@ package com.hhto.dmp;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -12,6 +13,7 @@ import java.util.*;
  */
 
 public class DataProvider {
+    private static final String TAG = "DataProvider";
     /**
      * These lists hold menus for corresponding weekday of the current week.
      * DataProvider should update these lists accordingly. (E.g. remove menu
@@ -47,7 +49,7 @@ public class DataProvider {
      * Refresh the lists from where tabs fetch display data.
      */
     public static void refresh(Context context) {
-        System.out.println("------REFRESH---------------------------------");
+        Log.d(TAG, "Refreshing data set.");
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
         Set<String> restaurantIds = pref.getStringSet("pref_key_selected_restaurants", new HashSet<String>());
         Calendar c = Calendar.getInstance();
@@ -61,9 +63,9 @@ public class DataProvider {
             menuList.clear();
             c.set(Calendar.DAY_OF_WEEK, weekday);
             String date = dateFormat.format(c.getTime());
-            System.out.println("------"+date+"---------------------------------");
+            Log.d(TAG, "Refreshing date: " + date);
             for (String id: restaurantIds) {
-                System.out.println("------ID:"+id+"---------------------------------");
+                Log.d(TAG, "Refreshing restaurant: " + restaurantIds);
                 Restaurant restaurant = restaurants.get(id);
                 Restaurant.RestaurantMenu menu = restaurant.getMenu(date);
                 if (menu != null) {

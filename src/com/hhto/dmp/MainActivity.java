@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,6 +20,7 @@ import java.util.Calendar;
 
 
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
+    private static final String TAG = "MainActivity";
     private ViewPager pager;
     private TabAdapter tabAdapter;
     private ActionBar actionBar;
@@ -92,6 +94,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d(TAG, "Resuming");
         DataProvider.refresh(this);
     }
 

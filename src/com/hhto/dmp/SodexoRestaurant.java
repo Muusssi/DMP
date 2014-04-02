@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import org.json.JSONObject;
 import org.json.JSONArray;
-import org.json.JSONException;
+import android.util.Log;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -12,15 +12,13 @@ import java.net.URL;
 import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.*;
 
 /**
  * Created by hmhagberg on 8.3.2014.
  */
 
 public class SodexoRestaurant extends Restaurant {
+    private static final String TAG = "SodexoRestaurant";
 
     public SodexoRestaurant(Context context) {
         super(context, "Sodexo", "141");
@@ -81,7 +79,7 @@ public class SodexoRestaurant extends Restaurant {
 
                     urlString = "http://www.sodexo.fi/ruokalistat/output/daily_json/"+sRestaurants[0].getUrlId()+"/"
                             +year+"/"+month +"/"+day+"/fi";
-                    System.out.println(":::Haetaan:"+urlString);
+                    Log.d(TAG, ":::Haetaan:"+urlString);
                     urlObj = new URL(urlString);
                     connection = (HttpURLConnection) urlObj.openConnection();
                     connection.setRequestMethod("GET");
@@ -97,7 +95,7 @@ public class SodexoRestaurant extends Restaurant {
                         response.append(inputLine);
                     }
                     connection.disconnect();
-                    System.out.println("::::::::Luettiin"+response.toString());
+                    Log.d(TAG, "::::::::Luettiin"+response.toString());
 
                     cal.add(Calendar.DATE, 1);
                     weeksJson[i] = response.toString();
@@ -135,24 +133,24 @@ public class SodexoRestaurant extends Restaurant {
                     JSONObject daysDownloadedJsonO;
                     JSONArray courseArray;
                     JSONObject parsedJson = new JSONObject("{\"meta\":{\"week\":"+weekNo+"},\"menus\":{}}");
-                    System.out.println("#####1#"+parsedJson.toString());
+                    Log.v(TAG, "#####1#"+parsedJson.toString());
 
 
                     for (int i=0; i<5; i++) {
                         date = sdf.format(cal.getTime());
-                        System.out.println("-----:"+weeksJson[i]);
+                        Log.d(TAG, "-----:"+weeksJson[i]);
                         daysDownloadedJsonO = new JSONObject(weeksJson[i]);
 
                         courseArray = daysDownloadedJsonO.getJSONArray("courses");
-                        System.out.println("#####Array#" + courseArray.toString());
+                        Log.v(TAG, "#####Array#" + courseArray.toString());
 
                         daysJsonO = new JSONObject("{\""+date+"\":{}}");
                         daysJsonO.put(date, courseArray);
-                        System.out.println("#####2#" + daysJsonO.toString());
+                        Log.v(TAG, "#####2#" + daysJsonO.toString());
 
                         parsedJson.accumulate("menus", daysJsonO);
 
-                        System.out.println("#####3#"+parsedJson.toString());
+                        Log.v(TAG, "#####3#"+parsedJson.toString());
 
                         cal.add(Calendar.DATE, 1);
                     }

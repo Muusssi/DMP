@@ -1,6 +1,7 @@
 package com.hhto.dmp;
 
 import android.content.Context;
+import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,6 +22,7 @@ import java.util.*;
  * for data downloading and parsing. This should be implemented using AsyncTask.
  */
 public abstract class Restaurant {
+    private static final String TAG = "Restaurant";
     Context context;
     String name;
     String urlId;
@@ -77,7 +79,7 @@ public abstract class Restaurant {
      * Build a JSONObject from cached data.
      */
     JSONObject loadFromCache() {
-        System.out.println("READ FROM CACHE");
+        Log.d(TAG, "Load data from cache.");
         try {
             File cacheDir = context.getCacheDir();
             File cacheFile = new File(cacheDir, urlId + ".json"); // Cache files are identified by restaurant urlId
@@ -92,7 +94,7 @@ public abstract class Restaurant {
             return json;
 
         } catch (FileNotFoundException e) {
-            System.out.println("CACHE FILE NOT FOUND");
+            Log.d(TAG, "Cache file not found.");
             return null;
         } catch (IOException e) {
             e.printStackTrace();
@@ -108,14 +110,13 @@ public abstract class Restaurant {
      */
     void saveToCache(JSONObject json) {
         try {
-            System.out.println("SAVING TO CACHE");
+            Log.d(TAG, "Saving data to cache.");
             File cacheDir = context.getCacheDir();
             File cacheFile = new File(cacheDir, urlId + ".json"); // Cache files are identified by restaurant urlId
             BufferedWriter writer = new BufferedWriter(new FileWriter(cacheFile, false));   // Overwrite cache
             writer.write(json.toString(4));
             writer.close();
-            System.out.println(json.toString(4));
-
+            Log.v(TAG, json.toString(4));
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JSONException e) {
@@ -153,7 +154,7 @@ public abstract class Restaurant {
                 menuMap.put(date, menu);
             }
             return menuMap;
-        } catch (JSONException e) { // EXCEPT
+        } catch (JSONException e) {
             e.printStackTrace();
         }
         return null;
@@ -180,28 +181,12 @@ public abstract class Restaurant {
                 menuMap.put(date, menu);
             }
             return menuMap;
-        } catch (JSONException e) { // EXCEPT
+        } catch (JSONException e) {
             e.printStackTrace();
         }
         return null;
     }
     */
-
-
-    /**
-     * Parse String to Calendar. Required format is yyyy-MM-dd.
-     * @param calString String to be parsed.
-     * @return Resulting Calendar.
-     * @throws ParseException
-     */
-    static Calendar parseCalendar(String calString) throws ParseException{
-        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = formatter.parse(calString);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        return calendar;
-    }
-
 
     /**
      * Menu of a particular restaurant for a single day.
