@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.support.v4.app.Fragment;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,6 +32,7 @@ public class MenuFragment extends Fragment {
         ListView cardList = (ListView) view.findViewById(R.id.cardList);
         MenuListAdapter adapter = new MenuListAdapter(getActivity(), menuList);
         cardList.setAdapter(adapter);
+        DataProvider.addAdapter(weekday, adapter);
         return view;
     }
 }

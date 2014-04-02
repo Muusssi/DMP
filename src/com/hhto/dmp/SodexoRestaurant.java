@@ -79,7 +79,7 @@ public class SodexoRestaurant extends Restaurant {
 
                     urlString = "http://www.sodexo.fi/ruokalistat/output/daily_json/"+sRestaurants[0].getUrlId()+"/"
                             +year+"/"+month +"/"+day+"/fi";
-                    Log.d(TAG, ":::Haetaan:"+urlString);
+                    Log.d(TAG, ":::Haetaan:" + urlString);
                     urlObj = new URL(urlString);
                     connection = (HttpURLConnection) urlObj.openConnection();
                     connection.setRequestMethod("GET");
@@ -95,7 +95,7 @@ public class SodexoRestaurant extends Restaurant {
                         response.append(inputLine);
                     }
                     connection.disconnect();
-                    Log.d(TAG, "::::::::Luettiin"+response.toString());
+                    Log.v(TAG, "::::::::Luettiin"+response.toString());
 
                     cal.add(Calendar.DATE, 1);
                     weeksJson[i] = response.toString();
@@ -138,7 +138,7 @@ public class SodexoRestaurant extends Restaurant {
 
                     for (int i=0; i<5; i++) {
                         date = sdf.format(cal.getTime());
-                        Log.d(TAG, "-----:"+weeksJson[i]);
+                        Log.v(TAG, "-----:"+weeksJson[i]);
                         daysDownloadedJsonO = new JSONObject(weeksJson[i]);
 
                         courseArray = daysDownloadedJsonO.getJSONArray("courses");
@@ -158,7 +158,7 @@ public class SodexoRestaurant extends Restaurant {
 
                     saveToCache(parsedJson);
                     // Refresh DataProvider and consequently UI
-                    DataProvider.refresh(context);
+                    DataProvider.refresh();
                 }
 
 

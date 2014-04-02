@@ -28,48 +28,70 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        // Create and create stuff
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
         pref = PreferenceManager.getDefaultSharedPreferences(this);
         PreferenceManager.setDefaultValues(this, R.xml.preferences, true);
         pager = (ViewPager) findViewById(R.id.pager);
+        pager.setOffscreenPageLimit(5);
         tabAdapter = new TabAdapter(getSupportFragmentManager());
         actionBar = getActionBar();
 
         pager.setAdapter(tabAdapter);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        DataProvider.init(this);
-        // DataProvider.refresh(this);
 
         // Create tabs
         DateFormatSymbols symbols = new DateFormatSymbols(); // Locale can be supplied as a parameter
         String[] weekdays = symbols.getShortWeekdays();
-        for (int i = 2; i < 7; i++) {   // Array starts from 1 and we also want to skip Sunday: offset is 2
+        // Array starts from 1 and we also want to skip Sunday which is the first day of the week.
+        // Therefore we start iterating from 2 (i.e. Monday).
+        for (int i = 2; i < 7; i++) {
             actionBar.addTab(actionBar.newTab().setText(weekdays[i])
                     .setTabListener(this));
         }
 
         // Select tab for current weekday
-        Calendar c = Calendar.getInstance();
+        Log.d(TAG, "Selecting tab");
+        if (savedInstanceState != null) {  // If current day is Saturday or Sunday set day to Monday instead
+            Integer selectedTab = savedInstanceState.getInt("tab", 0);
+            pager.setCurrentItem(selectedTab);
+            actionBar.setSelectedNavigationItem(selectedTab);
+        } else {
+            Calendar c = Calendar.getInstance();
+            Integer selectedTab = c.get(Calendar.DAY_OF_WEEK) - 2;    // Again offset
+            if (selectedTab > 4) {
+                selectedTab = 0;
+            }
+            pager.setCurrentItem(selectedTab);
+            actionBar.setSelectedNavigationItem(selectedTab);
+        }
+
+        /*
         switch (c.get(Calendar.DAY_OF_WEEK)) {
             case Calendar.MONDAY:
                 pager.setCurrentItem(0);
+                actionBar.setSelectedNavigationItem(0);
                 break;
             case Calendar.TUESDAY:
                 pager.setCurrentItem(1);
+                actionBar.setSelectedNavigationItem(1);
                 break;
             case Calendar.WEDNESDAY:
                 pager.setCurrentItem(2);
+                actionBar.setSelectedNavigationItem(2);
                 break;
             case Calendar.THURSDAY:
                 pager.setCurrentItem(3);
+                actionBar.setSelectedNavigationItem(3);
                 break;
             case Calendar.FRIDAY:
                 pager.setCurrentItem(4);
+                actionBar.setSelectedNavigationItem(4);
             default:
                 pager.setCurrentItem(0);
+                actionBar.setSelectedNavigationItem(0);
         }
+        */
 
         // This enables tab swiping
         pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -88,14 +110,32 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             }
         });
 
+        DataProvider.init(this);
+        // DataProvider.refresh(this);
 
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("tab", getActionBar().getSelectedNavigationIndex());
+        Log.d(TAG, "Saved tab " + getActionBar().getSelectedNavigationIndex());
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(TAG, "Starting");
+        DataProvider.refresh();
+        tabAdapter.notifyDataSetChanged();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d(TAG, "Resuming");
-        DataProvider.refresh(this);
+        // Log.d(TAG, "Resuming");
+        // DataProvider.refresh(this);
     }
 
     // Create action bar overflow menu

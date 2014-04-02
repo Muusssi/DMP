@@ -26,6 +26,8 @@ public class DataProvider {
     static List<Restaurant.RestaurantMenu> friday = new ArrayList<Restaurant.RestaurantMenu>();
     static Map<Integer, List<Restaurant.RestaurantMenu>> menuLists = new HashMap<Integer, List<Restaurant.RestaurantMenu>>(5);
     static Map<String, Restaurant> restaurants = new HashMap<String, Restaurant>();
+    static Map<Integer, MenuListAdapter> adapters = new HashMap<Integer, MenuListAdapter>(5);
+    static SharedPreferences pref = null;
 
     static {
         menuLists.put(Calendar.MONDAY, monday);
@@ -39,6 +41,10 @@ public class DataProvider {
      * Initialize restaurants.
      */
     public static void init(Context context) {
+        Log.d(TAG, "Initializing data provider.");
+        pref = PreferenceManager.getDefaultSharedPreferences(context);
+
+        // Add here all restaurants
         restaurants.put("sodexo", new SodexoRestaurant(context));
         for (Restaurant restaurant: restaurants.values()) {
             restaurant.init();
@@ -48,14 +54,14 @@ public class DataProvider {
     /**
      * Refresh the lists from where tabs fetch display data.
      */
-    public static void refresh(Context context) {
+    public static void refresh() {
         Log.d(TAG, "Refreshing data set.");
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
         Set<String> restaurantIds = pref.getStringSet("pref_key_selected_restaurants", new HashSet<String>());
         Calendar c = Calendar.getInstance();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Integer weekday;
         List<Restaurant.RestaurantMenu> menuList;
+        MenuListAdapter adapter;
 
         for (Map.Entry<Integer, List<Restaurant.RestaurantMenu>> entry: menuLists.entrySet()) {
             weekday = entry.getKey();
@@ -65,18 +71,27 @@ public class DataProvider {
             String date = dateFormat.format(c.getTime());
             Log.d(TAG, "Refreshing date: " + date);
             for (String id: restaurantIds) {
-                Log.d(TAG, "Refreshing restaurant: " + restaurantIds);
+                Log.d(TAG, "Refreshing restaurant: " + id);
                 Restaurant restaurant = restaurants.get(id);
                 Restaurant.RestaurantMenu menu = restaurant.getMenu(date);
                 if (menu != null) {
                     menuList.add(menu);
                 }
             }
+            adapter = adapters.get(weekday);
+            if (adapter != null) {
+                adapter.notifyDataSetChanged();
+            }
+
         }
     }
 
     public static List<Restaurant.RestaurantMenu> getMenuList(Integer weekday) {
         return menuLists.get(weekday);
+    }
+
+    public static void addAdapter(Integer weekday, MenuListAdapter adapter) {
+        adapters.put(weekday, adapter);
     }
 
 }
