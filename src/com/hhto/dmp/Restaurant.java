@@ -61,9 +61,7 @@ public abstract class Restaurant {
     abstract void downloadData();
 
     /**
-     * Check JSONObject holds menu data for current week.
-     * @param json JSONObject to be inspected.
-     * @return true if object is up-to-date, false otherwise.
+     * Check if JSONObject holds menu data for current week.
      */
     boolean jsonIsUpToDate(JSONObject json) {
         try {
@@ -77,7 +75,6 @@ public abstract class Restaurant {
 
     /**
      * Build a JSONObject from cached data.
-     * @return JSONObject built.
      */
     JSONObject loadFromCache() {
         System.out.println("READ FROM CACHE");
@@ -93,7 +90,11 @@ public abstract class Restaurant {
             }
             JSONObject json = new JSONObject(new JSONTokener(jsonString.toString()));
             return json;
-        } catch (IOException e) {   // EXCEPT
+
+        } catch (FileNotFoundException e) {
+            System.out.println("CACHE FILE NOT FOUND");
+            return null;
+        } catch (IOException e) {
             e.printStackTrace();
             return null;
         } catch (JSONException e) {
@@ -104,18 +105,18 @@ public abstract class Restaurant {
 
     /**
      * Write a JSONObject to cache.
-     * @param json
      */
     void saveToCache(JSONObject json) {
         try {
+            System.out.println("SAVING TO CACHE");
             File cacheDir = context.getCacheDir();
             File cacheFile = new File(cacheDir, urlId + ".json"); // Cache files are identified by restaurant urlId
             BufferedWriter writer = new BufferedWriter(new FileWriter(cacheFile, false));   // Overwrite cache
             writer.write(json.toString(4));
-
+            writer.close();
             System.out.println(json.toString(4));
 
-        } catch (IOException e) {   // EXCEPT
+        } catch (IOException e) {
             e.printStackTrace();
         } catch (JSONException e) {
             e.printStackTrace();

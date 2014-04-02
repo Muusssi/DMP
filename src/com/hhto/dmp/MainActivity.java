@@ -40,6 +40,14 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         DataProvider.init(this);
         // DataProvider.refresh(this);
 
+        // Create tabs
+        DateFormatSymbols symbols = new DateFormatSymbols(); // Locale can be supplied as a parameter
+        String[] weekdays = symbols.getShortWeekdays();
+        for (int i = 2; i < 7; i++) {   // Array starts from 1 and we also want to skip Sunday: offset is 2
+            actionBar.addTab(actionBar.newTab().setText(weekdays[i])
+                    .setTabListener(this));
+        }
+
         // Select tab for current weekday
         Calendar c = Calendar.getInstance();
         switch (c.get(Calendar.DAY_OF_WEEK)) {
@@ -61,21 +69,11 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 pager.setCurrentItem(0);
         }
 
-        // Create tabs
-        DateFormatSymbols symbols = new DateFormatSymbols(); // Locale can be supplied as a parameter
-        String[] weekdays = symbols.getShortWeekdays();
-        for (int i = 2; i < 7; i++) {   // Array starts from 1 and we also want to skip Sunday: offset is 2
-            actionBar.addTab(actionBar.newTab().setText(weekdays[i])
-                    .setTabListener(this));
-        }
-
         // This enables tab swiping
         pager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 
             @Override
             public void onPageSelected(int position) {
-                // on changing the page
-                // make respected tab selected
                 actionBar.setSelectedNavigationItem(position);
             }
 
@@ -94,7 +92,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     @Override
     protected void onResume() {
         super.onResume();
-        // DataProvider.refresh(this);
+        DataProvider.refresh(this);
     }
 
     // Create action bar overflow menu
