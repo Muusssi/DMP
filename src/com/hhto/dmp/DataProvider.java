@@ -47,6 +47,7 @@ public class DataProvider {
      * Refresh the lists from where tabs fetch display data.
      */
     public static void refresh(Context context) {
+        System.out.println("------REFRESH---------------------------------");
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
         Set<String> restaurantIds = pref.getStringSet("pref_key_selected_restaurants", new HashSet<String>());
         Calendar c = Calendar.getInstance();
@@ -60,7 +61,9 @@ public class DataProvider {
             menuList.clear();
             c.set(Calendar.DAY_OF_WEEK, weekday);
             String date = dateFormat.format(c.getTime());
+            System.out.println("------"+date+"---------------------------------");
             for (String id: restaurantIds) {
+                System.out.println("------ID:"+id+"---------------------------------");
                 Restaurant restaurant = restaurants.get(id);
                 Restaurant.RestaurantMenu menu = restaurant.getMenu(date);
                 if (menu != null) {

@@ -80,6 +80,7 @@ public abstract class Restaurant {
      * @return JSONObject built.
      */
     JSONObject loadFromCache() {
+        System.out.println("READ FROM CACHE");
         try {
             File cacheDir = context.getCacheDir();
             File cacheFile = new File(cacheDir, urlId + ".json"); // Cache files are identified by restaurant urlId
@@ -111,11 +112,15 @@ public abstract class Restaurant {
             File cacheFile = new File(cacheDir, urlId + ".json"); // Cache files are identified by restaurant urlId
             BufferedWriter writer = new BufferedWriter(new FileWriter(cacheFile, false));   // Overwrite cache
             writer.write(json.toString(4));
+
+            System.out.println(json.toString(4));
+
         } catch (IOException e) {   // EXCEPT
             e.printStackTrace();
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
     }
 
     /**
@@ -123,6 +128,37 @@ public abstract class Restaurant {
      * @param json JSONObject parsed from cached or downloaded data.
      * @return menuMap A HashMap with dates as keys and RestaurantMenus as values
      */
+
+
+    HashMap<String, RestaurantMenu> buildMenuMap(JSONObject json) {
+        try {
+            JSONArray menusArray = json.getJSONArray("menus");
+            JSONObject menus = menusArray.getJSONObject(1);
+
+            Iterator menusIterator = menus.keys();
+            HashMap<String, RestaurantMenu> menuMap = new HashMap<String, RestaurantMenu>();
+            JSONArray menuArray;
+            JSONObject jsonCourse;
+
+            while (menusIterator.hasNext()) {   // Iterate "whole week"
+                String date = (String) menusIterator.next();
+                menuArray = menus.getJSONArray(date);
+                RestaurantMenu menu = new RestaurantMenu(this, date);
+                for (int i = 0; i < menuArray.length(); i++){ // Iterate courses of a single day
+                    jsonCourse = menuArray.getJSONObject(i);
+                    Course course = new Course(jsonCourse.getString("title_fi"), jsonCourse.getString("title_en"), jsonCourse.getString("properties"));
+                    menu.addCourse(course);
+                }
+                menuMap.put(date, menu);
+            }
+            return menuMap;
+        } catch (JSONException e) { // EXCEPT
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /*
     HashMap<String, RestaurantMenu> buildMenuMap(JSONObject json) {
         try {
             JSONObject menus = json.getJSONObject("menus");
@@ -148,6 +184,8 @@ public abstract class Restaurant {
         }
         return null;
     }
+    */
+
 
     /**
      * Parse String to Calendar. Required format is yyyy-MM-dd.

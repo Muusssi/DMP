@@ -38,7 +38,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         pager.setAdapter(tabAdapter);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         DataProvider.init(this);
-        DataProvider.refresh(this);
+        // DataProvider.refresh(this);
 
         // Select tab for current weekday
         Calendar c = Calendar.getInstance();
@@ -94,7 +94,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     @Override
     protected void onResume() {
         super.onResume();
-        DataProvider.refresh(this);
+        // DataProvider.refresh(this);
     }
 
     // Create action bar overflow menu

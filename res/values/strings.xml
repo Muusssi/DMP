@@ -12,7 +12,7 @@
         <item>"Sodexo"</item>
     </string-array>
     <string-array name="restaurant_ids">
-        <item>"141"</item>
+        <item>"sodexo"</item>
     </string-array>
     <string-array name="languages">
         <item>"Suomi"</item>
