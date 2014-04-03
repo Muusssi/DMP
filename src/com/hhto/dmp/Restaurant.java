@@ -6,11 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
-
 import java.io.*;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -90,8 +86,8 @@ public abstract class Restaurant {
                 jsonString.append(line);
                 jsonString.append("\n");
             }
-            JSONObject json = new JSONObject(new JSONTokener(jsonString.toString()));
-            return json;
+
+            return new JSONObject(new JSONTokener(jsonString.toString()));
 
         } catch (FileNotFoundException e) {
             Log.d(TAG, "Cache file not found.");
@@ -132,25 +128,29 @@ public abstract class Restaurant {
      */
     HashMap<String, RestaurantMenu> buildMenuMap(JSONObject json) {
         try {
+            HashMap<String, RestaurantMenu> menuMap = new HashMap<String, RestaurantMenu>();
             JSONArray menusArray = json.getJSONArray("menus");
-            JSONObject menus = menusArray.getJSONObject(1);
-
-            Iterator menusIterator = menus.keys();
-            HashMap<String, RestaurantMenu> menuMap = new HashMap<String, RestaurantMenu>();
+            Iterator menusIterator;
             JSONArray menuArray;
             JSONObject jsonCourse;
 
-            while (menusIterator.hasNext()) {   // Iterate "whole week"
-                String date = (String) menusIterator.next();
-                menuArray = menus.getJSONArray(date);
-                RestaurantMenu menu = new RestaurantMenu(this, date);
-                for (int i = 0; i < menuArray.length(); i++){ // Iterate courses of a single day
-                    jsonCourse = menuArray.getJSONObject(i);
-                    Course course = new Course(jsonCourse.getString("title_fi"), jsonCourse.getString("title_en"), jsonCourse.getString("properties"));
-                    menu.addCourse(course);
+            for (int j=1; j<=5; j++) {
+                JSONObject menus = menusArray.getJSONObject(j);
+                menusIterator = menus.keys();
+
+                while (menusIterator.hasNext()) {   // Iterate "whole week"
+                    String date = (String) menusIterator.next();
+                    menuArray = menus.getJSONArray(date);
+                    RestaurantMenu menu = new RestaurantMenu(this, date);
+                    for (int i = 0; i < menuArray.length(); i++){ // Iterate courses of a single day
+                        jsonCourse = menuArray.getJSONObject(i);
+                        Course course = new Course(jsonCourse.getString("title_fi"), jsonCourse.getString("title_en"), jsonCourse.getString("properties"));
+                        menu.addCourse(course);
+                    }
+                    menuMap.put(date, menu);
                 }
-                menuMap.put(date, menu);
             }
+
             return menuMap;
         } catch (JSONException e) {
             e.printStackTrace();
@@ -158,33 +158,6 @@ public abstract class Restaurant {
         return null;
     }
 
-    /*
-    HashMap<String, RestaurantMenu> buildMenuMap(JSONObject json) {
-        try {
-            JSONObject menus = json.getJSONObject("menus");
-            Iterator menusIterator = menus.keys();
-            HashMap<String, RestaurantMenu> menuMap = new HashMap<String, RestaurantMenu>();
-            JSONArray menuArray;
-            JSONObject jsonCourse;
-
-            while (menusIterator.hasNext()) {   // Iterate "whole week"
-                String date = (String) menusIterator.next();
-                menuArray = menus.getJSONArray(date);
-                RestaurantMenu menu = new RestaurantMenu(this, date);
-                for (int i = 0; i < menuArray.length(); i++){ // Iterate courses of a single day
-                    jsonCourse = menuArray.getJSONObject(i);
-                    Course course = new Course(jsonCourse.getString("title_fi"), jsonCourse.getString("title_en"), jsonCourse.getString("properties"));
-                    menu.addCourse(course);
-                }
-                menuMap.put(date, menu);
-            }
-            return menuMap;
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-    */
 
     /**
      * Menu of a particular restaurant for a single day.
