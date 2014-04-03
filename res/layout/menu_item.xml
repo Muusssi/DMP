@@ -36,7 +36,7 @@
         android:layout_alignWithParentIfMissing="true"
         android:paddingLeft="@dimen/card_padding"
         android:paddingRight="@dimen/card_padding"
-        android:paddingBottom="0dip"
+        android:paddingBottom="5dip"
         android:text="Menus" />
 
 </RelativeLayout>
