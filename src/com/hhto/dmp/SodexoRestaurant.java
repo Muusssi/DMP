@@ -2,6 +2,7 @@ package com.hhto.dmp;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.widget.Toast;
 import org.json.JSONObject;
 import org.json.JSONArray;
 import android.util.Log;
@@ -12,11 +13,6 @@ import java.net.URL;
 import java.net.MalformedURLException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-
-/**
- * Created by hmhagberg on 8.3.2014.
- */
-
 
 /**
  * Subclass of Restaurant that represents a Sodexo restaurant and
@@ -31,10 +27,10 @@ public class SodexoRestaurant extends Restaurant {
 
     @Override
     void downloadData() {
-
+        String toastMsg = context.getResources().getString(R.string.toast_msg);
+        Toast.makeText(context, toastMsg, Toast.LENGTH_SHORT).show();
         DownloadJsonTask downloader = new DownloadJsonTask();
         downloader.execute(this);
-
     }
 
     /**

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Misc -->
     <string name="app_name">Lunch!</string>
     <string name="ok">OK</string>
+    <string name="toast_msg">Downloading data…</string>
 
     <!-- Preferences -->
     <string name="pref_title_selected_restaurants">Restaurants</string>
