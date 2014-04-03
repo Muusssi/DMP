@@ -21,8 +21,8 @@ import java.util.Calendar;
 public class SodexoRestaurant extends Restaurant {
     private static final String TAG = "SodexoRestaurant";
 
-    public SodexoRestaurant(Context context) {
-        super(context, "Sodexo", "141");
+    public SodexoRestaurant(Context context, String urlId) {
+        super(context, "Sodexo", urlId);
     }
 
     @Override
