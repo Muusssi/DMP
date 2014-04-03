@@ -46,9 +46,10 @@ public class DataProvider {
         pref = PreferenceManager.getDefaultSharedPreferences(context);
 
         // Add here all restaurants
-        restaurants.put("sodexo", new SodexoRestaurant(context, "141"));
-        restaurants.put("aalto_oih", new SodexoRestaurant(context, "133"));
+        restaurants.put("sodexo", new SodexoRestaurant(context, "Sodexo", "141"));
+        restaurants.put("aalto_oih", new SodexoRestaurant(context, "Aalto OIH", "133"));
         for (Restaurant restaurant: restaurants.values()) {
+            Log.d(TAG, "Initializing restaurant " + restaurant.getName());
             restaurant.init();
         }
     }

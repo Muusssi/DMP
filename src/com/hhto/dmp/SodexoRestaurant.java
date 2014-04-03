@@ -21,8 +21,8 @@ import java.util.Calendar;
 public class SodexoRestaurant extends Restaurant {
     private static final String TAG = "SodexoRestaurant";
 
-    public SodexoRestaurant(Context context, String urlId) {
-        super(context, "Sodexo", urlId);
+    public SodexoRestaurant(Context context, String name, String urlId) {
+        super(context, name, urlId);
     }
 
     @Override
@@ -131,12 +131,23 @@ public class SodexoRestaurant extends Restaurant {
                     JSONObject parsedJson = new JSONObject("{\"meta\":{\"week\":"+weekNo+"},\"menus\":{}}");
 
 
-                    for (int i=0; i<5; i++) {
+                    for (int i = 0; i < 5; i++) {
                         date = sdf.format(cal.getTime());
                         Log.v(TAG, "-----:"+weeksJson[i]);
                         daysDownloadedJsonO = new JSONObject(weeksJson[i]);
 
                         courseArray = daysDownloadedJsonO.getJSONArray("courses");
+                        for (int j = 0; j < courseArray.length(); j++) {
+                            JSONObject course = courseArray.getJSONObject(j);
+
+                            // These checks are mainly for Aalto OIH
+                            if (!course.has("title_en")) {
+                                course.put("title_en", course.getString("title_fi"));
+                            }
+                            if (!course.has("properties")) {
+                                course.put("properties", "");
+                            }
+                        }
                         daysJsonO = new JSONObject("{\""+date+"\":{}}");
                         daysJsonO.put(date, courseArray);
 
