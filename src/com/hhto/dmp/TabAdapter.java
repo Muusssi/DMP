@@ -11,9 +11,6 @@ import android.util.Log;
 
 import java.util.Calendar;
 
-/**
- * Created by hmhagberg on 13.3.2014.
- */
 public class TabAdapter extends FragmentPagerAdapter {
     private static final String TAG = "FragmentPagerAdapter";
 

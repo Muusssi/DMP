@@ -1,6 +1,5 @@
 package com.hhto.dmp;
 
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,11 +10,9 @@ import android.support.v4.app.Fragment;
 import java.util.List;
 
 /**
- * Created by hmhagberg on 13.3.2014.
+ * A fragment to be used as the content of a tab.
  */
-
 public class MenuFragment extends Fragment {
-
     public static MenuFragment newInstance(Integer weekday) {
         MenuFragment mf = new MenuFragment();
         Bundle args = new Bundle();

@@ -20,10 +20,10 @@ import android.widget.TextView;
 
 import java.util.List;
 
-/**
- * Created by hmhagberg on 7.3.2014.
- */
 
+/**
+ * A list adapter for MenuFragment's list.
+ */
 public class MenuListAdapter extends ArrayAdapter<Restaurant.RestaurantMenu> {
     private static int ROW_LAYOUT = R.layout.menu_item;
     private Context context;
@@ -42,12 +42,14 @@ public class MenuListAdapter extends ArrayAdapter<Restaurant.RestaurantMenu> {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
         TextView nameText = (TextView) rowView.findViewById(R.id.nameText);
         TextView menuText = (TextView) rowView.findViewById(R.id.menuText);
+
+        // Get content data
         Restaurant.RestaurantMenu menu = menus.get(position);
         List<Restaurant.Course> courses = menu.getCourses();
         String language = pref.getString("pref_key_language", "en");
         Boolean showProperties = pref.getBoolean("pref_key_show_properties", true);
 
-        // Actual content setting
+        // Set content
         SpannableStringBuilder collector = new SpannableStringBuilder();
         nameText.setText(menu.getRestaurant().getName());
         int titleColor = context.getResources().getColor(R.color.menu_blue);
@@ -64,7 +66,7 @@ public class MenuListAdapter extends ArrayAdapter<Restaurant.RestaurantMenu> {
             }
             collector.append("\n");
 
-            // Adda small spacing between courses
+            // Add a little spacing between courses
             SpannableString spacingLine = new SpannableString("\n");
             spacingLine.setSpan(new AbsoluteSizeSpan(lineSpacing, true), 0, spacingLine.length(), 0);
             collector.append(spacingLine);

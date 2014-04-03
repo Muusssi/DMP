@@ -30,6 +30,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "Creating");
         setContentView(R.layout.main);
         pref = PreferenceManager.getDefaultSharedPreferences(this);
         PreferenceManager.setDefaultValues(this, R.xml.preferences, true);
@@ -69,34 +70,26 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         });
 
         DataProvider.init(this);
-        // DataProvider.refresh(this);
-
     }
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.d(TAG, "Starting");
-        DataProvider.refresh();
-        tabAdapter.notifyDataSetChanged();
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
-        // Select tab for current weekday
         Log.d(TAG, "Resuming");
-        if (selectedTab != -1) {    // If tab has been already set
-            pager.setCurrentItem(selectedTab);
-            actionBar.setSelectedNavigationItem(selectedTab);
-        } else {
+
+        // Refesh data set in case options were changed
+        DataProvider.refresh();
+        tabAdapter.notifyDataSetChanged();
+
+        // Set selected tab
+        if (selectedTab == -1) {    // If tab hasn't been selected, select tab corresponding to current weekday
             Calendar c = Calendar.getInstance();
             selectedTab = c.get(Calendar.DAY_OF_WEEK) - 2;    // Again offset
-            if (selectedTab > 4) {  // If current day is Saturday or Sunday set day to Monday instead
+            if (selectedTab > 4) {  // If current day is Saturday or Sunday set to Monday instead
                 selectedTab = 0;
             }
-            pager.setCurrentItem(selectedTab);
-            actionBar.setSelectedNavigationItem(selectedTab);
         }
+        pager.setCurrentItem(selectedTab);
+        actionBar.setSelectedNavigationItem(selectedTab);
     }
 
     @Override

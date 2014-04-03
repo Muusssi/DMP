@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Card colors -->
     <color name="card_bg">#ffdddddd</color>
     <color name="card_white">#ffffffff</color>
     <color name="card_shadow">#8c666666</color>
 
+    <!-- Content colors -->
     <color name="name_blue">#06799F</color>
     <color name="menu_blue">#06799F</color>
     <color name="properties_red">#BF4630</color>

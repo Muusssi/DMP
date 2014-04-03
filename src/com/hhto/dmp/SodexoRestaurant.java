@@ -18,7 +18,7 @@ import java.util.Calendar;
  */
 
 
-/*
+/**
  * Subclass of Restaurant that represents a Sodexo restaurant and
  * implements the data downloading functionality to the restaurant.
  */
@@ -37,14 +37,14 @@ public class SodexoRestaurant extends Restaurant {
 
     }
 
-    /*
+    /**
      * An AsyncTask that downloads the requirered Json data and then parses it.
      */
     class DownloadJsonTask extends AsyncTask<SodexoRestaurant, Void, String[]> {
         SodexoRestaurant restaurant = null;
 
 
-        /*
+        /**
          * An AsyncTask method that downloads Json menus from Sodexo.fi
          */
         @Override
@@ -110,8 +110,8 @@ public class SodexoRestaurant extends Restaurant {
             return null;
         }
 
-        /*
-         * An AsyncTask that executes after the downloading and parses the downloaded Json
+        /**
+         * An AsyncTask method that executes after the downloading and parses the downloaded Json
          * to the format this program uses and then saves to the cache and builds the menuMap.
          */
         @Override

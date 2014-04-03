@@ -10,10 +10,6 @@ import java.io.*;
 import java.util.*;
 
 /**
- * Created by hmhagberg on 3.3.2014.
- */
-
-/**
  * The base class for various restaurants. The implementation is complete except
  * for data downloading and parsing. This should be implemented using AsyncTask.
  */
@@ -43,9 +39,10 @@ public abstract class Restaurant {
     }
 
     /**
-     * Initialize menus. If data is up to date it is loaded from cache,
-     * otherwise it is downloaded from web. This method should be called
-     * "immediately" after instantiation.
+     * Initialize menus.
+     *
+     * If data is up to date it is loaded from cache, otherwise it is downloaded from web.
+     * This method should be called "immediately" after instantiation.
      */
     void init() {
         JSONObject json = loadFromCache();
@@ -56,6 +53,9 @@ public abstract class Restaurant {
         }
     }
 
+    /**
+     * Download data, parse, add to menusOfTheWeek and save to cache.
+     */
     abstract void downloadData();
 
     /**
@@ -73,9 +73,11 @@ public abstract class Restaurant {
 
     /**
      * Build a JSONObject from cached data.
+     *
+     * This method is agnostic to the format of JSON.
      */
     JSONObject loadFromCache() {
-        Log.d(TAG, "Load data from cache.");
+        Log.d(TAG, "Load data from cache");
         try {
             File cacheDir = context.getCacheDir();
             File cacheFile = new File(cacheDir, urlId + ".json"); // Cache files are identified by restaurant urlId
@@ -86,11 +88,10 @@ public abstract class Restaurant {
                 jsonString.append(line);
                 jsonString.append("\n");
             }
-
+            reader.close();
             return new JSONObject(new JSONTokener(jsonString.toString()));
-
         } catch (FileNotFoundException e) {
-            Log.d(TAG, "Cache file not found.");
+            Log.d(TAG, "Cache file not found");
             return null;
         } catch (IOException e) {
             e.printStackTrace();
@@ -103,6 +104,8 @@ public abstract class Restaurant {
 
     /**
      * Write a JSONObject to cache.
+     *
+     * This method is agnostic to the format of JSON.
      */
     void saveToCache(JSONObject json) {
         try {
@@ -118,13 +121,10 @@ public abstract class Restaurant {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
     }
 
     /**
      * Build RestaurantMenu objects from JSON and insert them to menusOfTheWeek.
-     * @param json JSONObject parsed from cached or downloaded data.
-     * @return menuMap A HashMap with dates as keys and RestaurantMenus as values
      */
     HashMap<String, RestaurantMenu> buildMenuMap(JSONObject json) {
         try {
@@ -138,11 +138,11 @@ public abstract class Restaurant {
                 JSONObject menus = menusArray.getJSONObject(j);
                 menusIterator = menus.keys();
 
-                while (menusIterator.hasNext()) {   // Iterate "whole week"
+                while (menusIterator.hasNext()) {   // Iterate over whole week
                     String date = (String) menusIterator.next();
                     menuArray = menus.getJSONArray(date);
                     RestaurantMenu menu = new RestaurantMenu(this, date);
-                    for (int i = 0; i < menuArray.length(); i++){ // Iterate courses of a single day
+                    for (int i = 0; i < menuArray.length(); i++){ // Iterate over courses of a single day
                         jsonCourse = menuArray.getJSONObject(i);
                         Course course = new Course(jsonCourse.getString("title_fi"), jsonCourse.getString("title_en"), jsonCourse.getString("properties"));
                         menu.addCourse(course);
@@ -176,7 +176,6 @@ public abstract class Restaurant {
         public String toString() {
             return restaurant + " " + date;
         }
-
 
         public Restaurant getRestaurant() {
             return restaurant;
